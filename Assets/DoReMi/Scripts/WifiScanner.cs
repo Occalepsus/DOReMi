@@ -91,7 +91,7 @@ public class WifiScanner : MonoBehaviour
         {
             wifiInfoArray[i] = new WifiInfo();
             AndroidJavaObject javaWifiInfo = scanResults.Call<AndroidJavaObject>("get", i);
-            wifiInfoArray[i].SSID = getSDKInt() >= 33 ? javaWifiInfo.Call<string>("getWifiSsid") : javaWifiInfo.Get<string>("SSID");
+            wifiInfoArray[i].SSID = GetSDKInt() >= 33 ? javaWifiInfo.Call<string>("getWifiSsid") : javaWifiInfo.Get<string>("SSID");
             wifiInfoArray[i].level = javaWifiInfo.Get<int>("level");
         }
     }
@@ -114,7 +114,7 @@ public class WifiScanner : MonoBehaviour
     }
 
 
-    static int getSDKInt()
+    static int GetSDKInt()
     {
         using var version = new AndroidJavaClass("android.os.Build$VERSION");
         return version.GetStatic<int>("SDK_INT");
