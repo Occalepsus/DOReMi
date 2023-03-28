@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Oculus/SampleFramework/Usage/SpatialAnchor.unity
     guid: 1db179c458352bf46beb307fd047d589
   - enabled: 1
-    path: Assets/Scenes/Julien.unity
+    path: Assets/Scenes/Julien - Curved UI.unity
     guid: a5ca22a9dfe870f4c9c8dce2c1e3dec5
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 888b4250f8ceaa2429e77b7ecbe027b7, type: 2}
