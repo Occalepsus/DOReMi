@@ -4,17 +4,5 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 0
-    path: Assets/Oculus/SampleFramework/Usage/SpatialAnchor.unity
-    guid: 1db179c458352bf46beb307fd047d589
-  - enabled: 1
-    path: Assets/Scenes/Louise.unity
-    guid: 99d68dacc24e0434198147c86923d468
-  m_configObjects:
-    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 888b4250f8ceaa2429e77b7ecbe027b7, type: 2}
-    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: b550aba097c7b214e94381654fb763a8, type: 2}
-    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: fda83ed5dae59e5479586d7562b1d9be, type: 2}
+  m_Scenes: []
+  m_configObjects: {}
