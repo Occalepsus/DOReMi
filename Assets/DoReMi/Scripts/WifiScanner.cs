@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Android;
@@ -8,6 +7,7 @@ using UnityEngine.Android;
 public struct WifiInfo
 {
     public string SSID;
+    public string MAC;
     public int level;
 }
 
@@ -16,6 +16,7 @@ public class WifiScanner : MonoBehaviour
     public TMP_Text WifiNumberText;
     public TMP_Text WifiSSIDText;
     public TMP_Text WifiLevelText;
+    public TMP_Text WifiMACText;
     public TMP_Text WifiCountText;
 
     private AndroidJavaObject wifiManager;
@@ -89,10 +90,16 @@ public class WifiScanner : MonoBehaviour
         wifiInfoArray = new WifiInfo[size];
         for (int i = 0; i < size; i++)
         {
-            wifiInfoArray[i] = new WifiInfo();
-            AndroidJavaObject javaWifiInfo = scanResults.Call<AndroidJavaObject>("get", i);
-            wifiInfoArray[i].SSID = GetSDKInt() >= 33 ? javaWifiInfo.Call<string>("getWifiSsid") : javaWifiInfo.Get<string>("SSID");
-            wifiInfoArray[i].level = javaWifiInfo.Get<int>("level");
+            // Get i-th scan result
+            AndroidJavaObject scanResult = scanResults.Call<AndroidJavaObject>("get", i);
+
+            // Initializing and setting WifiInfo
+            wifiInfoArray[i] = new()
+            {
+                SSID = GetSDKInt() >= 33 ? scanResult.Call<string>("getWifiSsid") : scanResult.Get<string>("SSID"),
+                MAC = scanResult.Get<string>("BSSID"),
+                level = scanResult.Get<int>("level")
+            };
         }
     }
 
@@ -105,11 +112,13 @@ public class WifiScanner : MonoBehaviour
         {
             WifiSSIDText.SetText("WiFi SSID : " + wifiInfoArray[WifiIdx].SSID);
             WifiLevelText.SetText("WiFi level : " + wifiInfoArray[WifiIdx].level + "dBm");
+            WifiMACText.SetText("WiFi MAC : " + wifiInfoArray[WifiIdx].MAC);
         }
         else
         {
             WifiSSIDText.SetText("WiFi SSID : NO WIFI FOUND");
             WifiLevelText.SetText("WiFi level : NO WIFI FOUND");
+            WifiMACText.SetText("WiFi MAC : NO WIFI FOUND");
         }
     }
 
