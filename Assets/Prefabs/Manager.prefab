@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6264437135622345332
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6264437135622345331}
+  - component: {fileID: 6264437135622345330}
+  - component: {fileID: 6264437135622345333}
+  m_Layer: 0
+  m_Name: Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6264437135622345331
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6264437135622345332}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6264437135622345330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6264437135622345332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 432567d157dd9b1478a34a3d58ae077c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _anchorPrefab: {fileID: 3354236514297470965, guid: cbd6efbdc5102a044bf11631bfccb0c1, type: 3}
+--- !u!114 &6264437135622345333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6264437135622345332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9735d0f6df960334585926b5295e7d18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _createModeButton: {fileID: 0}
+  _selectModeButton: {fileID: 0}
+  _trackedDevice: {fileID: 0}
+  _lineRenderer: {fileID: 0}
+  _buttonList:
+  - {fileID: 0}
+  - {fileID: 0}
+  _anchorPrefab: {fileID: 7834850231863383217, guid: 8f5c6b57bbe840f4aab192587930d20a, type: 3}
+  _placementPreview: {fileID: 789684486510353890, guid: 11a631610132d0b4c9a69aff1720d0d3, type: 3}
+  _anchorPlacementTransform: {fileID: 0}
