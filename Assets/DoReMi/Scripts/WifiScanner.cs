@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Android;
@@ -7,7 +5,7 @@ using UnityEngine.Android;
 public struct WifiInfo
 {
     public string SSID;
-    public string MAC;
+    public string BSSID;
     public int level;
 }
 
@@ -21,20 +19,20 @@ public class WifiScanner : MonoBehaviour
 
     private AndroidJavaObject wifiManager;
 
-    private WifiInfo[] wifiInfoArray;
+    //private WifiInfo[] wifiInfoArray;
 
-    private bool canChange = true;
+    //private bool canChange = true;
 
-    private int _wifiIdx = 0;
-    public int WifiIdx
-    {
-        get => _wifiIdx;
-        set
-        {
-            _wifiIdx = wifiInfoArray.Length == 0 ? 0 : value % wifiInfoArray.Length;
-            WifiNumberText.SetText("WiFi number : " + _wifiIdx);
-        }
-    }
+    //private int _wifiIdx = 0;
+    //public int WifiIdx
+    //{
+    //    get => _wifiIdx;
+    //    set
+    //    {
+    //        _wifiIdx = wifiInfoArray.Length == 0 ? 0 : value % wifiInfoArray.Length;
+    //        WifiNumberText.SetText("WiFi number : " + _wifiIdx);
+    //    }
+    //}
 
     private void Start()
     {
@@ -45,31 +43,31 @@ public class WifiScanner : MonoBehaviour
 
     private void Update()
     {
-        if (OVRInput.GetDown(OVRInput.Button.One))
-        {
-            UpdateWifiInfoList();
-            WifiIdx = 0;
-            UpdateDisp();
-        }
+        //if (OVRInput.GetDown(OVRInput.Button.One))
+        //{
+        //    UpdateWifiInfoList();
+        //    WifiIdx = 0;
+        //    UpdateDisp();
+        //}
 
-        float YThumbstick = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick).y;
+        //float YThumbstick = OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick).y;
 
-        if (YThumbstick < -0.01f && canChange)
-        {
-            WifiIdx--;
-            UpdateDisp();
-            canChange = false;
-        }
-        else if (YThumbstick > 0.01f && canChange)
-        {
-            WifiIdx++;
-            UpdateDisp();
-            canChange = false;
-        }
-        else if (YThumbstick == 0 && !canChange)
-        {
-            canChange = true;
-        }
+        //if (YThumbstick < -0.01f && canChange)
+        //{
+        //    WifiIdx--;
+        //    UpdateDisp();
+        //    canChange = false;
+        //}
+        //else if (YThumbstick > 0.01f && canChange)
+        //{
+        //    WifiIdx++;
+        //    UpdateDisp();
+        //    canChange = false;
+        //}
+        //else if (YThumbstick == 0 && !canChange)
+        //{
+        //    canChange = true;
+        //}
     }
 
     internal void PermissionGrantedCallback(string permissionName)
@@ -82,12 +80,12 @@ public class WifiScanner : MonoBehaviour
         }
     }
 
-    private void UpdateWifiInfoList()
+    public WifiInfo[] GetWifiInfo()
     {
         AndroidJavaObject scanResults = wifiManager.Call<AndroidJavaObject>("getScanResults");
 
         int size = scanResults.Call<int>("size");
-        wifiInfoArray = new WifiInfo[size];
+        WifiInfo[] wifiInfoArray = new WifiInfo[size];
         for (int i = 0; i < size; i++)
         {
             // Get i-th scan result
@@ -97,33 +95,33 @@ public class WifiScanner : MonoBehaviour
             wifiInfoArray[i] = new()
             {
                 SSID = GetSDKInt() >= 33 ? scanResult.Call<string>("getWifiSsid") : scanResult.Get<string>("SSID"),
-                MAC = scanResult.Get<string>("BSSID"),
+                BSSID = scanResult.Get<string>("BSSID"),
                 level = scanResult.Get<int>("level")
             };
         }
+        return wifiInfoArray;
     }
 
-    private void UpdateDisp()
-    {
-        WifiNumberText.SetText("WiFi number : " + WifiIdx);
-        WifiCountText.SetText("WiFi count : " + wifiInfoArray.Length);
+    //private void UpdateDisp()
+    //{
+    //    WifiNumberText.SetText("WiFi number : " + WifiIdx);
+    //    WifiCountText.SetText("WiFi count : " + wifiInfoArray.Length);
 
-        if (wifiInfoArray.Length > 0)
-        {
-            WifiSSIDText.SetText("WiFi SSID : " + wifiInfoArray[WifiIdx].SSID);
-            WifiLevelText.SetText("WiFi level : " + wifiInfoArray[WifiIdx].level + "dBm");
-            WifiMACText.SetText("WiFi MAC : " + wifiInfoArray[WifiIdx].MAC);
-        }
-        else
-        {
-            WifiSSIDText.SetText("WiFi SSID : NO WIFI FOUND");
-            WifiLevelText.SetText("WiFi level : NO WIFI FOUND");
-            WifiMACText.SetText("WiFi MAC : NO WIFI FOUND");
-        }
-    }
+    //    if (wifiInfoArray.Length > 0)
+    //    {
+    //        WifiSSIDText.SetText("WiFi SSID : " + wifiInfoArray[WifiIdx].SSID);
+    //        WifiLevelText.SetText("WiFi level : " + wifiInfoArray[WifiIdx].level + "dBm");
+    //        WifiMACText.SetText("WiFi MAC : " + wifiInfoArray[WifiIdx].MAC);
+    //    }
+    //    else
+    //    {
+    //        WifiSSIDText.SetText("WiFi SSID : NO WIFI FOUND");
+    //        WifiLevelText.SetText("WiFi level : NO WIFI FOUND");
+    //        WifiMACText.SetText("WiFi MAC : NO WIFI FOUND");
+    //    }
+    //}
 
-
-    static int GetSDKInt()
+    private static int GetSDKInt()
     {
         using var version = new AndroidJavaClass("android.os.Build$VERSION");
         return version.GetStatic<int>("SDK_INT");
