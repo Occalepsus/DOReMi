@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-struct MatCol
-{
-    public MatCol(Matrix4x4 mat, Color col)
-    {
-        this.Mat = mat;
-        this.Col = col;
-    }
+//struct MatCol
+//{
+//    public MatCol(Matrix4x4 mat, Color col)
+//    {
+//        this.Mat = mat;
+//        this.Col = col;
+//    }
 
-    public Matrix4x4 Mat { get; }
-    public Color Col { get; }
-}
+//    public Matrix4x4 Mat { get; }
+//    public Color Col { get; }
+//}
 
 public class GridManager : MonoBehaviour
 {
@@ -23,20 +23,24 @@ public class GridManager : MonoBehaviour
     /// <summary>
     /// The size of the points in the grid
     /// </summary>
-    public Vector3Int gridSize = new(3, 2, 5);
+    public Vector2Int gridSize;
     /// <summary>
     /// The number of points in the grid
     /// </summary>
     private int _pointsCount;
     /// <summary>
-    /// The space between points
+    /// The size of the size of a tile
     /// </summary>
-    public float pointDist = 0.5f;
+    public float tileSize = 0.5f;
+    /// <summary>
+    /// The side size of a bar
+    /// </summary>
+    public float barSize = 0.2f;
 
     /// <summary>
     /// The mesh of the spheres
     /// </summary>
-    public Mesh sphereMesh;
+    public Mesh barMesh;
 
     /// <summary>
     /// The material of the spheres that are not scanned yet
@@ -51,40 +55,45 @@ public class GridManager : MonoBehaviour
     /// </summary>
     public Material measuredMat;
 
+    ///// <summary>
+    ///// The Material Property Block used to make scanned points color
+    ///// </summary>
+    //private MaterialPropertyBlock _propertyBlock;
+    ///// <summary>
+    ///// The property id of color in _propertyBlock;
+    ///// </summary>
+    //private int _colorID;
+
     /// <summary>
-    /// The Material Property Block used to make scanned points color
+    /// The height of the not scanned or not measured bars
     /// </summary>
-    private MaterialPropertyBlock _propertyBlock;
-    /// <summary>
-    /// The property id of color in _propertyBlock;
-    /// </summary>
-    private int _colorID;
+    public float nullHeight;
 
     /// <summary>
     /// The lowest level to be detected
     /// </summary>
     public int lowLevel;
-    /// <summary>
-    /// The color of the spheres with a level lower than lowLevel
-    /// </summary>
-    public Color lowColor;
+    ///// <summary>
+    ///// The color of the spheres with a level lower than lowLevel
+    ///// </summary>
+    //public Color lowColor;
     /// <summary>
     /// The scale of the spheres with a level lower than lowLevel, also the scale of not scanned shperes
     /// </summary>
-    public float lowScale;
+    public float lowHeight;
 
     /// <summary>
     /// The highest level to be detected
     /// </summary>
     public int highLevel;
+    ///// <summary>
+    ///// The color of the spheres with a level higher than highLevel
+    ///// </summary>
+    //public Color highColor;
     /// <summary>
     /// The color of the spheres with a level higher than highLevel
     /// </summary>
-    public Color highColor;
-    /// <summary>
-    /// The color of the spheres with a level higher than highLevel
-    /// </summary>
-    public float highScale;
+    public float highHeight;
 
     /// <summary>
     /// The hashcode of the selected AP
@@ -94,7 +103,7 @@ public class GridManager : MonoBehaviour
     /// <summary>
     /// A matrix of every AP level at every position of the grid
     /// </summary>
-    private Dictionary<int, int>[,,] _levels;
+    private Dictionary<int, int>[,] _levels;
 
     /// <summary>
     /// The list of Transforms of the points that have not been scanned yet
@@ -107,29 +116,26 @@ public class GridManager : MonoBehaviour
     /// <summary>
     /// The list of Transforms and Colors of the points that have been scanned and where the selected AP has been detected
     /// </summary>
-    private List<MatCol> _measuredTransforms;
+    private List<Matrix4x4> _measuredTransforms;
 
     private void Awake()
     {
-        _propertyBlock = new();
-        _colorID = Shader.PropertyToID("_Color");
+        //_propertyBlock = new();
+        //_colorID = Shader.PropertyToID("_Color");
 
         // Logging an error if there are more than 1023 points to draw in the grid
-        if ((_pointsCount = gridSize.x * gridSize.y * gridSize.z) > 1023)
+        if ((_pointsCount = gridSize.x * gridSize.y) > 1023)
         {
             Debug.LogError($"Warning: there are {_pointsCount} points in the grid, which is higher than 1023. Possible errors of crashs");
         }
 
         // Initializing levels array
-        _levels = new Dictionary<int, int>[gridSize.x, gridSize.y, gridSize.z];
+        _levels = new Dictionary<int, int>[gridSize.x, gridSize.y];
         for (int x = 0; x < gridSize.x; x++)
         {
             for (int y = 0; y < gridSize.y; y++)
             {
-                for (int z = 0; z < gridSize.z; z++)
-                {
-                    _levels[x, y, z] = new Dictionary<int, int>(SimManager.MAX_AP);
-                }
+                _levels[x, y] = new Dictionary<int, int>(SimManager.MAX_AP);
             }
         }
 
@@ -139,19 +145,22 @@ public class GridManager : MonoBehaviour
     private void Update()
     {
         // Drawing not scanned points
-        Graphics.DrawMeshInstanced(sphereMesh, 0, notScannedMat, _notScannedTransforms);
+        Graphics.DrawMeshInstanced(barMesh, 0, notScannedMat, _notScannedTransforms);
 
         // Drawing scanned but not found points
-        Graphics.DrawMeshInstanced(sphereMesh, 0, emptyScanMat, _emptyScanTransforms);
+        Graphics.DrawMeshInstanced(barMesh, 0, emptyScanMat, _emptyScanTransforms);
 
-        // Drawing each scanned and found points with the right color
-        foreach (var el in _measuredTransforms)
-        {
-            // Setting the color
-            _propertyBlock.SetColor(_colorID, el.Col);
-            // Drawing the actual sphere
-            Graphics.DrawMesh(sphereMesh, el.Mat, measuredMat, 0, null, 0, _propertyBlock);
-        }
+        // Drawing measured meshes
+        Graphics.DrawMeshInstanced(barMesh, 0, measuredMat, _measuredTransforms);
+
+        //// Drawing each scanned and found points with the right color
+        //foreach (var el in _measuredTransforms)
+        //{
+        //    // Setting the color
+        //    _propertyBlock.SetColor(_colorID, el.Col);
+        //    // Drawing the actual sphere
+        //    Graphics.DrawMesh(barMesh, el.Mat, measuredMat, 0, null, 0, _propertyBlock);
+        //}
     }
 
     /// <summary>
@@ -171,46 +180,43 @@ public class GridManager : MonoBehaviour
     /// </summary>
     public void UpdateScanDisplay()
     {
-        _notScannedTransforms = new(gridSize.x * gridSize.y * gridSize.z);
-        _emptyScanTransforms = new(gridSize.x * gridSize.y * gridSize.z);
-        _measuredTransforms = new(gridSize.x * gridSize.y * gridSize.z);
+        _notScannedTransforms = new(_pointsCount);
+        _emptyScanTransforms = new(_pointsCount);
+        _measuredTransforms = new(_pointsCount);
 
         for (int x = 0; x < gridSize.x; x++)
         {
             for (int y = 0; y < gridSize.y; y++)
             {
-                for (int z = 0; z < gridSize.z; z++)
+                // Not scanned case
+                if (_levels[x, y].Count == 0)
                 {
-                    // Not scanned case
-                    if (_levels[x, y, z].Count == 0)
-                    {
-                        // Creating the transform
-                        Matrix4x4 mat = Matrix4x4.TRS((new Vector3(x, y, z) * pointDist) + gridOrigin, Quaternion.identity, Vector3.one * lowScale);
-                        // Adding it to the List of not scanned points
-                        _notScannedTransforms.Add(mat);
-                    }
-                    // Scanned and found case
-                    else if (_levels[x, y, z].TryGetValue(_selectedAPHashcode, out int val))
-                    {
-                        // Getting the t of the level
-                        float t;
-                        if (val <= lowLevel) t = 0;
-                        else if (val >= highLevel) t = 1;
-                        else t = (val - lowLevel) / (float)(highLevel - lowLevel);
+                    // Creating the transform
+                    Matrix4x4 mat = Matrix4x4.TRS(new Vector3(x * tileSize, 0, y * tileSize) + gridOrigin, Quaternion.identity, new Vector3(barSize, nullHeight, barSize));
+                    // Adding it to the List of not scanned points
+                    _notScannedTransforms.Add(mat);
+                }
+                // Scanned and found case
+                else if (_levels[x, y].TryGetValue(_selectedAPHashcode, out int val))
+                {
+                    // Unlerping val between lowLevel and highLevel
+                    float t = Mathf.InverseLerp(lowLevel, highLevel, val);
+                    // Lerping the value of the height
+                    float height = Mathf.Lerp(lowHeight, highHeight, t);
 
-                        // Creating the transform
-                        Matrix4x4 mat = Matrix4x4.TRS((new Vector3(x, y, z) * pointDist) + gridOrigin, Quaternion.identity, Vector3.one * (t * (highScale - lowScale) + lowScale));
-                        // Adding it to the List of not scanned points
-                        _measuredTransforms.Add(new MatCol(mat, Color.Lerp(lowColor, highColor, t)));
-                    }
-                    // Scanned but not found case
-                    else
-                    {
-                        // Creating the transform
-                        Matrix4x4 mat = Matrix4x4.TRS((new Vector3(x, y, z) * pointDist) + gridOrigin, Quaternion.identity, Vector3.one * lowScale);
-                        // Adding it to the List of not scanned points
-                        _emptyScanTransforms.Add(mat);
-                    }
+                    // Creating the transform
+                    Matrix4x4 mat = Matrix4x4.TRS(new Vector3(x * tileSize, 0, y * tileSize) + gridOrigin, Quaternion.identity, new Vector3(barSize, height, barSize));
+                    // Adding it to the List of not scanned points
+                    //_measuredTransforms.Add(new MatCol(mat, Color.Lerp(lowColor, highColor, t)));
+                    _measuredTransforms.Add(mat);
+                }
+                // Scanned but not found case
+                else
+                {
+                    // Creating the transform
+                    Matrix4x4 mat = Matrix4x4.TRS(new Vector3(x * tileSize, 0, y * tileSize) + gridOrigin, Quaternion.identity, new Vector3(barSize, nullHeight, barSize));
+                    // Adding it to the List of not scanned points
+                    _emptyScanTransforms.Add(mat);
                 }
             }
         }
@@ -221,41 +227,65 @@ public class GridManager : MonoBehaviour
     /// </summary>
     /// <remarks>Warning: Does not look for grid bounds</remarks>
     /// <param name="pos">The position in world</param>
-    /// <returns>The coordinates of the nearest point</returns>
-    public Vector3Int GetNearestCoordinate(Vector3 pos)
+    /// <returns>The 2D coordinates of the nearest point</returns>
+    public Vector2Int GetNearestCoordinate(Vector3 pos)
     {
         pos -= gridOrigin;
-        pos /= pointDist;
+        pos /= tileSize;
 
-        return new Vector3Int(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z));
+        return new Vector2Int(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.z));
+    }
+
+    /// <summary>
+    /// Gets if the coordinates are in the bounds of the grid
+    /// </summary>
+    /// <param name="coordinates">The 2D coordinates to test</param>
+    /// <returns>true if in the bound, false otherwise</returns>
+    public bool IsInTheBoundsAtPos(Vector2Int coordinates)
+    {
+        return 0 <= coordinates.x && coordinates.x < gridSize.x &&
+            0 <= coordinates.y && coordinates.y < gridSize.y;
     }
 
     /// <summary>
     /// Gets if a scan has already been performed here
     /// </summary>
-    /// <param name="coordinates">The coordinates of the scan</param>
-    /// <returns>true if scan has never been performed here, false otherwise</returns>
-    public bool CanScanAtPos(Vector3Int coordinates)
+    /// <param name="coordinates">The 2D coordinates of the scan</param>
+    /// <returns>true if scan is in the bounds and has never been performed here, false otherwise</returns>
+    public bool CanScanAtPos(Vector2Int coordinates)
     {
-        return 
-            0 <= coordinates.x && coordinates.x < gridSize.x &&
-            0 <= coordinates.y && coordinates.y < gridSize.y &&
-            0 <= coordinates.z && coordinates.z < gridSize.z &&            
-            _levels[coordinates.x, coordinates.y, coordinates.z].Count == 0;
+        return IsInTheBoundsAtPos(coordinates) &&            
+            _levels[coordinates.x, coordinates.y].Count == 0;
     }
 
     /// <summary>
     /// Registers the scan into the grid
     /// </summary>
-    /// <param name="coordinates">The coordinates of the scan</param>
+    /// <param name="coordinates">The 2D coordinates of the scan</param>
     /// <param name="APInfo">The information of the scan</param>
-    public void ScanAtPos(Vector3Int coordinates, WifiAPInfo[] APInfo)
+    public void ScanAtPos(Vector2Int coordinates, WifiAPInfo[] APInfo)
     {
         foreach (var AP in APInfo)
         {
-            _levels[coordinates.x, coordinates.y, coordinates.z].Add(AP.BSSID.GetHashCode(), AP.level);
+            _levels[coordinates.x, coordinates.y].Add(AP.BSSID.GetHashCode(), AP.level);
         }
 
         UpdateScanDisplay();
+    }
+
+    /// <summary>
+    /// Gets the value of the scan at the coordinates for the selected AP
+    /// </summary>
+    /// <param name="coordinates">The coordinates of the scan</param>
+    /// <returns>int.MinValue if no scan found, the scanned value otherwise</returns>
+    public int GetValueAt(Vector2Int coordinates)
+    {
+        Debug.Log(_levels[coordinates.x, coordinates.y].Count);
+        if (IsInTheBoundsAtPos(coordinates) && _levels[coordinates.x, coordinates.y].TryGetValue(_selectedAPHashcode, out int value))
+        {
+            return value;
+        }
+
+        return int.MinValue;
     }
 }

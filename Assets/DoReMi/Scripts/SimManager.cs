@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using TMPro;
 using UnityEditor;
@@ -44,33 +45,33 @@ public class SimManager : MonoBehaviour
 
     private void Update()
     {
-        Vector3Int nearestCoordinate = GridManager.GetNearestCoordinate(HeadTransform.position);
+        Vector2Int nearestCoordinate = GridManager.GetNearestCoordinate(HeadTransform.position);
         if (GridManager.CanScanAtPos(nearestCoordinate))
         {
-            Vector3 nearestWorldPos = new Vector3(nearestCoordinate.x, nearestCoordinate.y, nearestCoordinate.z) * GridManager.pointDist + GridManager.gridOrigin;
-            if (Vector3.Distance(nearestWorldPos, HeadTransform.position) < scanRange)
+            Vector3 nearestWorldPos = new Vector3(nearestCoordinate.x, 0, nearestCoordinate.y) * GridManager.tileSize + GridManager.gridOrigin;
+            if (Vector3.Distance(nearestWorldPos, Vector3.ProjectOnPlane(HeadTransform.position, Vector3.up)) < scanRange)
             {
-                //try
-                //{
+                try
+                {
                     GridManager.ScanAtPos(nearestCoordinate, ScanWifi());
-                //}
-                //catch
-                //{
-                //    Debug.LogWarning("Warning: Scan failed, putting test fake scan instead");
-                //    WifiAPInfo[] info = new WifiAPInfo[1];
-                //    info[0] = new WifiAPInfo()
-                //    {
-                //        SSID = "TEST",
-                //        BSSID = "00:00",
-                //        level = -30
-                //    };
-                //    GridManager.ScanAtPos(nearestCoordinate, info);
-                //    GridManager.SetSelectedAP("00:00".GetHashCode());
-                //}
+                }
+                catch (NullReferenceException)
+                {
+                    Debug.LogWarning("Warning: Scan failed, putting test fake scan instead");
+                    WifiAPInfo[] info = new WifiAPInfo[1];
+                    info[0] = new WifiAPInfo()
+                    {
+                        SSID = "TEST",
+                        BSSID = "00:00",
+                        level = -30
+                    };
+                    GridManager.ScanAtPos(nearestCoordinate, info);
+                    GridManager.SetSelectedAP("00:00".GetHashCode());
+                }
             }
         }
         // Temp:
-        if (OVRInput.GetDown(OVRInput.Button.Any))
+        if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger))
         {
             WifiAPInfo[] val = new WifiAPInfo[_APTable.Count];
             _APTable.Values.CopyTo(val, 0);
