@@ -2,36 +2,51 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ValueDisplay : MonoBehaviour
+namespace Assets.DoReMi.Scripts
 {
-    public GridManager gridManager;
-
-    public Transform labelAnchor;
-    public Label label;
-
-    private void Update()
+    public class ValueDisplay : MonoBehaviour
     {
-        label.transform.position = labelAnchor.position;
+        /// <summary>
+        /// The global GridManager
+        /// </summary>
+        public GridManager gridManager;
 
-        if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
+        /// <summary>
+        /// The anchor of the label
+        /// </summary>
+        public Transform labelAnchor;
+        /// <summary>
+        /// The label itself
+        /// </summary>
+        public Label label;
+
+        private void Update()
         {
-            Vector2Int gridPos = gridManager.GetNearestCoordinate(label.transform.position);
-            int val = gridManager.GetValueAt(gridPos);
-            Debug.Log(gridPos);
-            Debug.Log(val);
-            if (gridManager.IsInTheBoundsAtPos(gridPos) && val > int.MinValue)
-            {
-                if (!label.isActiveAndEnabled)
-                    label.gameObject.SetActive(true);
+            // TODO : Why is this not in the if below?
+            // Moves the label at its anchor
+            label.transform.position = labelAnchor.position;
 
-                label.SetValue(val);
-            }
-            else
+            if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
             {
-                label.gameObject.SetActive(false);
+                // Updates the value on which the label is
+                Vector2Int gridPos = gridManager.GetNearestCoordinate(label.transform.position);
+                int val = gridManager.GetValueAt(gridPos);
+
+                // If the label is in the scanned bounds and the value exists (has been scanned and found)
+                if (gridManager.IsInTheBoundsAtPos(gridPos) && val > int.MinValue)
+                {
+                    if (!label.isActiveAndEnabled)
+                        label.gameObject.SetActive(true);
+
+                    label.SetValue(val);
+                }
+                else
+                {
+                    label.gameObject.SetActive(false);
+                }
             }
+            else if (label.isActiveAndEnabled)
+                label.gameObject.SetActive(false);
         }
-        else if (label.isActiveAndEnabled)
-            label.gameObject.SetActive(false);
     }
 }
