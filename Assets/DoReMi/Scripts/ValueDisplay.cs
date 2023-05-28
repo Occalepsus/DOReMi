@@ -29,11 +29,10 @@ namespace Assets.DoReMi.Scripts
             if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
             {
                 // Updates the value on which the label is
-                Vector2Int gridPos = gridManager.GetNearestCoordinate(label.transform.position);
-                int val = gridManager.GetValueAt(gridPos);
+                int val = gridManager.GetValueAt(label.transform.position);
 
                 // If the label is in the scanned bounds and the value exists (has been scanned and found)
-                if (gridManager.IsInTheBoundsAtPos(gridPos) && val > int.MinValue)
+                if (val > int.MinValue)
                 {
                     if (!label.isActiveAndEnabled)
                         label.gameObject.SetActive(true);

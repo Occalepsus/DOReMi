@@ -46,36 +46,28 @@ namespace Assets.DoReMi.Scripts
         /// The Dict of all detected access points in space
         /// </summary>
         /// <remarks>maximum MAX_AP elements for optimization</remarks>
-        private Dictionary<int, WifiAPInfo> _APTable = new(MAX_AP); // Maybe change WifiInfo to just String for BSSID, the rest is useless here
+        private readonly Dictionary<int, WifiAPInfo> _APTable = new(MAX_AP); // Maybe change WifiInfo to just String for BSSID, the rest is useless here
 
         private void Update()
         {
-            // Gets the position of the headset on the grid
-            Vector2Int nearestCoordinate = GridManager.GetNearestCoordinate(HeadTransform.position);
-            // Gets if it is possible to scan at this position
-            if (GridManager.CanScanAtPos(nearestCoordinate))
+            if (GridManager.CanScanAtPos(HeadTransform.position, out _) && GridManager.GetDistanceFromNearestTile(HeadTransform.position, out _) < scanRange)
             {
-                // Performs the scan
-                Vector3 nearestWorldPos = new Vector3(nearestCoordinate.x, 0, nearestCoordinate.y) * GridManager.tileSize + GridManager.gridOrigin;
-                if (Vector3.Distance(nearestWorldPos, Vector3.ProjectOnPlane(HeadTransform.position, Vector3.up)) < scanRange)
+                try
                 {
-                    try
+                    GridManager.ScanAtPos(HeadTransform.position, ScanWifi());
+                }
+                catch (NullReferenceException)
+                {
+                    Debug.LogWarning("Warning: Scan failed, putting test fake scan instead");
+                    WifiAPInfo[] info = new WifiAPInfo[1];
+                    info[0] = new WifiAPInfo()
                     {
-                        GridManager.ScanAtPos(nearestCoordinate, ScanWifi());
-                    }
-                    catch (NullReferenceException)
-                    {
-                        Debug.LogWarning("Warning: Scan failed, putting test fake scan instead");
-                        WifiAPInfo[] info = new WifiAPInfo[1];
-                        info[0] = new WifiAPInfo()
-                        {
-                            SSID = "TEST",
-                            BSSID = "00:00",
-                            level = -30
-                        };
-                        GridManager.ScanAtPos(nearestCoordinate, info);
-                        GridManager.SetSelectedAP("00:00".GetHashCode());
-                    }
+                        SSID = "TEST",
+                        BSSID = "00:00",
+                        level = -30
+                    };
+                    GridManager.ScanAtPos(HeadTransform.position, info);
+                    GridManager.SetSelectedAP("00:00".GetHashCode());
                 }
             }
             // Temp:
