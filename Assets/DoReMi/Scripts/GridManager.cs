@@ -28,10 +28,6 @@ namespace Assets.DoReMi.Scripts
         /// </summary>
         private Vector2Int _gridSize;
         /// <summary>
-        /// The size of a tile in the grid
-        /// </summary>
-        private readonly float _tileSize;
-        /// <summary>
         /// The number of points in the grid
         /// </summary>
         private readonly int _pointsCount;
@@ -43,12 +39,10 @@ namespace Assets.DoReMi.Scripts
         {
             if (playAreaBounds == null || playAreaBounds.Length != 4) throw new ArgumentException("Invalid argument");
 
-            _tileSize = tileSize;
+            Vector3 gridOrigin = playAreaBounds[0] - gridOffset * tileSize * ((playAreaBounds[1] - playAreaBounds[0]).normalized + (playAreaBounds[3] - playAreaBounds[0]).normalized);
 
-            Vector3 gridOrigin = playAreaBounds[0] - gridOffset * _tileSize * ((playAreaBounds[1] - playAreaBounds[0]).normalized + (playAreaBounds[3] - playAreaBounds[0]).normalized);
-
-            _gridSize = new(Mathf.RoundToInt((playAreaBounds[1] - playAreaBounds[0]).magnitude / _tileSize) + 2 * gridOffset + 1,
-                Mathf.RoundToInt((playAreaBounds[3] - playAreaBounds[0]).magnitude / _tileSize) + 2 * gridOffset + 1);
+            _gridSize = new(Mathf.RoundToInt((playAreaBounds[1] - playAreaBounds[0]).magnitude / tileSize) + 2 * gridOffset + 1,
+                Mathf.RoundToInt((playAreaBounds[3] - playAreaBounds[0]).magnitude / tileSize) + 2 * gridOffset + 1);
             _pointsCount = _gridSize.x * _gridSize.y;
 
             rotationToWorldMatrix = Matrix4x4.TRS(gridOrigin, Quaternion.FromToRotation(Vector3.right, playAreaBounds[1] - playAreaBounds[0]), Vector3.one * tileSize);
@@ -69,37 +63,37 @@ namespace Assets.DoReMi.Scripts
         /// <summary>
         /// Gets the position of the point in the world
         /// </summary>
-        /// <param name="inGridPos">The coordiantes to get</param>
+        /// <param name="inGridCoords">The coordiantes to get</param>
         /// <returns>inGridPos projected on the world</returns>
-        public Vector3 ToWorldPos(Vector2Int inGridPos)
+        public Vector3 ToWorldPos(Vector2Int inGridCoords)
         {
-            return ToWorldPos(inGridPos.x, inGridPos.y);
+            return ToWorldPos(inGridCoords.x, inGridCoords.y);
         }
 
         /// <summary>
         /// Gets the position of the point in the grid rounded to the nearest tile
         /// </summary>
         /// <param name="inWorldPos">The position to get</param>
-        /// <param name="inGridPos">The coordinates in the grid</param>
+        /// <param name="inGridCoords">The coordinates in the grid</param>
         /// <returns>true if the inGridPos is in the bounds of the grid, false otherwise</returns>
-        public bool ToGridPos(Vector3 inWorldPos, out Vector2Int inGridPos)
+        public bool ToGridCoords(Vector3 inWorldPos, out Vector2Int inGridCoords)
         {
-            Vector3 vec = rotationToGridMatrix.MultiplyPoint3x4(inWorldPos) / _tileSize;
-            inGridPos = new Vector2Int(Mathf.RoundToInt(vec.x), Mathf.RoundToInt(vec.z));
-            return inGridPos.x >= 0 && inGridPos.y >= 0 && inGridPos.x < _gridSize.x && inGridPos.y < _gridSize.y;
+            Vector3 vec = rotationToGridMatrix.MultiplyPoint3x4(inWorldPos);
+            inGridCoords = new Vector2Int(Mathf.RoundToInt(vec.x), Mathf.RoundToInt(vec.z));
+            return inGridCoords.x >= 0 && inGridCoords.y >= 0 && inGridCoords.x < _gridSize.x && inGridCoords.y < _gridSize.y;
         }
 
         /// <summary>
         /// Gets the position of the point in the grid rounded to the nearest tile and returns the distance of the position and the rounded one
         /// </summary>
         /// <param name="inWorldPos">The position to get</param>
-        /// <param name="inGridPos">The coordinates in the grid</param>
+        /// <param name="inGridCoords">The coordinates in the grid</param>
         /// <returns>The distance between the normal projection and in the grid</returns>
-        public float ToGridPosDist(Vector3 inWorldPos, out Vector2Int inGridPos)
+        public float ToGridCoordsDist(Vector3 inWorldPos, out Vector2Int inGridCoords)
         {
-            Vector3 vec = rotationToGridMatrix.MultiplyPoint3x4(inWorldPos) / _tileSize;
-            inGridPos = new Vector2Int(Mathf.RoundToInt(vec.x), Mathf.RoundToInt(vec.z));
-            return Vector3.Distance(vec, inWorldPos);
+            Vector3 vec = rotationToGridMatrix.MultiplyPoint3x4(inWorldPos);
+            inGridCoords = new Vector2Int(Mathf.RoundToInt(vec.x), Mathf.RoundToInt(vec.z));
+            return Vector3.Distance(new(inWorldPos.x, 0, inWorldPos.z) , ToWorldPos(inGridCoords));
         }
 
         public readonly Vector2Int GetSize()
@@ -199,7 +193,7 @@ namespace Assets.DoReMi.Scripts
         /// <summary>
         /// A matrix of every AP level at every position of the grid
         /// </summary>
-        private int[,] _computedLevels;
+        private float[,] _computedLevels;
 
         /// <summary>
         /// The list of Transforms of the points that have not been scanned yet
@@ -228,9 +222,10 @@ namespace Assets.DoReMi.Scripts
             {
                 _grid = new Grid(OVRManager.boundary.GetGeometry(OVRBoundary.BoundaryType.PlayArea), tileSize, gridOffset);
             }
+            // In case the Guardian is not set
             catch (Exception e)
             {
-                Debug.LogException(e);
+                Debug.LogWarning(e);
                 Vector3[] v = { new Vector3(0, 0), new Vector3(1, 0, 0), new Vector3(1, 0, 1), new Vector3(0, 0, 1) };
                 _grid = new Grid(v, tileSize, gridOffset);
             }
@@ -321,7 +316,7 @@ namespace Assets.DoReMi.Scripts
 
                         // Creating the transform of the sphere and the line
                         Matrix4x4 sMat = Matrix4x4.TRS(_grid.ToWorldPos(x, y) + height * Vector3.up, Quaternion.identity, Vector3.one * sphereSize);
-                        Matrix4x4 lMat = Matrix4x4.TRS(_grid.ToWorldPos(x, y) + height * Vector3.up, Quaternion.identity, new Vector3(lineSize, height / 2f, lineSize));
+                        Matrix4x4 lMat = Matrix4x4.TRS(_grid.ToWorldPos(x, y) + height / 2 * Vector3.up, Quaternion.identity, new Vector3(lineSize, height / 2f, lineSize));
 
                         // Adding them to the List of scanned points
                         _measuredSphereTransforms.Add(sMat);
@@ -368,7 +363,7 @@ namespace Assets.DoReMi.Scripts
         /// <returns>The distance</returns>
         public float GetDistanceFromNearestTile(Vector3 position, out Vector2Int inGridPos)
         {
-            return _grid.ToGridPosDist(position, out inGridPos);
+            return _grid.ToGridCoordsDist(position, out inGridPos);
         }
 
         /// <summary>
@@ -379,7 +374,7 @@ namespace Assets.DoReMi.Scripts
         /// <returns>true if scan is in the bounds and has never been performed here, false otherwise</returns>
         public bool CanScanAtPos(Vector3 worldPos, out Vector2Int inGridPos)
         {
-            return _grid.ToGridPos(worldPos, out inGridPos) &&
+            return _grid.ToGridCoords(worldPos, out inGridPos) &&
                 _scannedLevels[inGridPos.x, inGridPos.y].Count == 0;
         }
 
@@ -390,7 +385,7 @@ namespace Assets.DoReMi.Scripts
         /// <param name="APInfo">The information of the scan</param>
         public void ScanAtPos(Vector3 position, WifiAPInfo[] APInfo)
         {
-            if (!_grid.ToGridPos(position, out Vector2Int coordinates)) return;
+            if (!_grid.ToGridCoords(position, out Vector2Int coordinates)) return;
 
             foreach (var AP in APInfo)
             {
@@ -407,7 +402,7 @@ namespace Assets.DoReMi.Scripts
         /// <returns>int.MinValue if no scan found, the scanned value otherwise</returns>
         public int GetValueAt(Vector3 position)
         {
-            if (_grid.ToGridPos(position, out Vector2Int coordinates) && _scannedLevels[coordinates.x, coordinates.y].TryGetValue(_selectedAPHashcode, out int value))
+            if (_grid.ToGridCoords(position, out Vector2Int coordinates) && _scannedLevels[coordinates.x, coordinates.y].TryGetValue(_selectedAPHashcode, out int value))
             {
                 return value;
             }
@@ -419,9 +414,9 @@ namespace Assets.DoReMi.Scripts
         /// Makes the compute levels grid to be calculated with computeAtPos
         /// </summary>
         /// <param name="computeAtPos">The function that computes the model</param>
-        public void ComputeGrid(Func<Vector3, int> computeAtPos)
+        public void ComputeGrid(Func<Vector3, float> computeAtPos)
         {
-            _computedLevels = new int[_grid.GetSize().x, _grid.GetSize().y];
+            _computedLevels = new float[_grid.GetSize().x, _grid.GetSize().y];
             for (int x = 0; x < _grid.GetSize().x; x++)
             {
                 for (int y = 0; y < _grid.GetSize().y; y++)

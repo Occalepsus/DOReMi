@@ -26,7 +26,7 @@ namespace Assets.DoReMi.Scripts
             // Moves the label at its anchor
             label.transform.position = labelAnchor.position;
 
-            if (OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
+            if (OVRInput.Get(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch))
             {
                 // Updates the value on which the label is
                 int val = gridManager.GetValueAt(label.transform.position);
