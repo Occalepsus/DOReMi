@@ -79,17 +79,51 @@ namespace Assets.DoReMi.Scripts
                 }
             }
             // Temp:
-            if (OVRInput.GetDown(OVRInput.Button.One))
+            if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick)[0] > 0.9)
             {
                 WifiAPInfo[] wifiList = new WifiAPInfo[_APTable.Count];
-                _APTable.Values.CopyTo(wifiList, 0);
-                idx++;
-                idx %= wifiList.Length;
-                txtIdx.SetText("nb: " + idx);
-                SSID.SetText(wifiList[idx].SSID);
-                BSSID.SetText(wifiList[idx].BSSID);
-                txtCnt.SetText("total: " + wifiList.Length);
-                GridManager.SetSelectedAP(wifiList[idx].BSSID.GetHashCode());
+                if (idx < wifiList.Length - 1)
+                {
+                    _APTable.Values.CopyTo(wifiList, 0);
+                    idx++;
+                    if (idx == wifiList.Length - 1)
+                    {
+                        // TODO : unactivate right arrow
+                    }
+                    if (idx > 0)
+                    {
+                        // TODO : activate left arrow
+                    }
+                    idx %= wifiList.Length;
+                    txtIdx.SetText("nb: " + idx);
+                    SSID.SetText(wifiList[idx].SSID);
+                    BSSID.SetText(wifiList[idx].BSSID);
+                    txtCnt.SetText("total: " + wifiList.Length);
+                    GridManager.SetSelectedAP(wifiList[idx].BSSID.GetHashCode());
+                }
+            }
+            if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick)[0] > 0.9)
+            {
+                WifiAPInfo[] wifiList = new WifiAPInfo[_APTable.Count];
+                if (idx > 0)
+                {
+                    _APTable.Values.CopyTo(wifiList, 0);
+                    idx--;
+                    if (idx < wifiList.Length - 1)
+                    {
+                        // TODO : activate right arrow
+                    }
+                    if (idx == 0)
+                    {
+                        // TODO : unactivate left arrow
+                    }
+                    idx %= wifiList.Length;
+                    txtIdx.SetText("nb: " + idx);
+                    SSID.SetText(wifiList[idx].SSID);
+                    BSSID.SetText(wifiList[idx].BSSID);
+                    txtCnt.SetText("total: " + wifiList.Length);
+                    GridManager.SetSelectedAP(wifiList[idx].BSSID.GetHashCode());
+                }
             }
         }
 
