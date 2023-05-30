@@ -980,6 +980,10 @@ MonoBehaviour:
   colorMapEditorBrightness: 0
   colorMapEditorPosterize: 0
   colorMapEditorSaturation: 0
+  _colorLutSourceTexture: {fileID: 0}
+  _colorLutTargetTexture: {fileID: 0}
+  _lutWeight: 1
+  _flipLutY: 1
   serializedSurfaceGeometry: []
   textureOpacity_: 1
   edgeRenderingEnabled_: 0
@@ -1307,9 +1311,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae4126a6bed412b49b55cfd5b5453960, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridOrigin: {x: -2, y: 0, z: -2}
-  gridSize: {x: 10, y: 20}
-  tileSize: 0.3
+  tileSize: 0.2
+  gridOffset: 2
   sphereSize: 0.02
   sphereMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
   lineSize: 0.01
