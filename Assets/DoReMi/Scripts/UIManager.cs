@@ -58,6 +58,7 @@ public class UIManager : MonoBehaviour
     public TMP_Text wifiSSID;
     public TMP_Text wifiBSSID;
     private int displayIndex = 0;
+    private int cooldown = 0;
 
     private List<WifiAPInfo> wifiAPInfos = new List<WifiAPInfo> { };
 
@@ -88,17 +89,37 @@ public class UIManager : MonoBehaviour
             ChangeMode();
         }
         // updates wifi infos if the wifiInfo display is active
-        if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x > 0.5 && wifiInfo.activeSelf)
+        if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x > 0.85 && wifiInfo.activeSelf)
         {
-            displayIndex = (displayIndex + 1) % wifiAPInfos.Count;
-            gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
+            if (cooldown > 0)
+            {
+                cooldown++;
+                if (cooldown == 8) cooldown = 0;
+            }
+            else
+            {
+                displayIndex = (displayIndex + 1 + wifiAPInfos.Count) % wifiAPInfos.Count;
+                gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
+                cooldown++;
+            }
+            
         }
-        if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x < -0.5 && wifiInfo.activeSelf)
+        if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x < -0.85 && wifiInfo.activeSelf)
         {
-            displayIndex = (displayIndex - 1) % wifiAPInfos.Count;
-            gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
+            if (cooldown > 0)
+            {
+                cooldown++;
+                if (cooldown == 8) cooldown = 0;
+            }
+            else
+            {
+                displayIndex = (displayIndex - 1 + wifiAPInfos.Count) % wifiAPInfos.Count;
+                gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
+                cooldown++;
+            }
         }
         
+        // executes operation of button A depending on the mode
         if (OVRInput.GetDown(OVRInput.Button.One))
         {
             switch(_mode)
@@ -127,7 +148,7 @@ public class UIManager : MonoBehaviour
             apModel.PlaceAPModel(_trackedDevice);
         }
 
-        // Reset grid when pressing B
+        // Reset grid when pressing B on modes Measure and Config
         if (OVRInput.GetDown(OVRInput.RawButton.B) && _mode != AppMode.Display)
         {
             restoreManager.ResetGrid();
@@ -142,10 +163,10 @@ public class UIManager : MonoBehaviour
         // Updates the wifi info values
         if (wifiAPInfos.Any())
         {
-            wifiNumber.SetText(displayIndex.ToString() + "/" + wifiAPInfos.Count);
+            wifiNumber.SetText((displayIndex + 1).ToString() + "/" + wifiAPInfos.Count);
             wifiSSID.SetText(wifiAPInfos[displayIndex].SSID);
             wifiBSSID.SetText(wifiAPInfos[displayIndex].BSSID);
-        }
+        }        
     }
 
     /// <summary>
@@ -209,7 +230,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            restoreManager.RestoreValues();
+            restoreManager.DiscardSavedGrid();
             saveButton.SetActive(true);
         }
     }

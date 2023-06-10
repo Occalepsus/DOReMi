@@ -1,3 +1,4 @@
+using OculusSampleFramework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -563,6 +564,17 @@ namespace Assets.DoReMi.Scripts
         public void DiscardSavedValues()
         {
             _savedSphereTransforms = new(0);
+        }
+
+        public bool NearestTilePosition(Transform transform, out Vector3 tilePosition)
+        {
+            if (!_grid.ToGridCoords(transform.position, out Vector2Int inGridCoords))
+            {
+                tilePosition = new Vector3(0, 0, 0);
+                return false;
+            }
+            tilePosition = _grid.ToWorldPos(inGridCoords);
+            return true;
         }
     }
 }
