@@ -29,7 +29,7 @@ namespace Assets.DoReMi.Scripts
             if (OVRInput.Get(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch))
             {
                 // Updates the value on which the label is
-                int val = gridManager.GetValueAt(label.transform.position);
+                gridManager.GetValuesAt(label.transform.position, out int val, out _, out _);
 
                 // If the label is in the scanned bounds and the value exists (has been scanned and found)
                 if (val > int.MinValue)

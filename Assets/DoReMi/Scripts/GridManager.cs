@@ -423,16 +423,28 @@ namespace Assets.DoReMi.Scripts
         /// <summary>
         /// Gets the value of the scan at the coordinates for the selected AP
         /// </summary>
-        /// <param name="position">The position of the scan</param>
-        /// <returns>int.MinValue if no scan found, the scanned value otherwise</returns>
-        public int GetValueAt(Vector3 position)
+        /// <param name="position">The position to get the values</param>
+        /// <param name="computedValue">The computed value, int.MinValue if not found</param>
+        /// <param name="savedValue">The saved value, float.MinValue if not found</param>
+        /// <param name="scannedValue">The scanned value, int.MinValue if not found</param>
+        public void GetValuesAt(Vector3 position, out int scannedValue, out float computedValue, out int savedValue)
         {
-            if (_grid.ToGridCoords(position, out Vector2Int coordinates) && _scannedLevels[coordinates.x, coordinates.y].TryGetValue(_selectedAPHashcode, out int value))
+            if (_grid.ToGridCoords(position, out Vector2Int coordinates))
             {
-                return value;
-            }
+                scannedValue =
+                    _scannedLevels[coordinates.x, coordinates.y].TryGetValue(_selectedAPHashcode, out int value) ?
+                    value : int.MinValue;
 
-            return int.MinValue;
+                computedValue = _computedLevels[coordinates.x, coordinates.y];
+
+                savedValue = _savedLevels != null ? _savedLevels[coordinates.x, coordinates.y] : int.MinValue;
+            }
+            else
+            {
+                scannedValue = int.MinValue;
+                computedValue = float.MinValue;
+                savedValue = int.MinValue;
+            }
         }
 
         /// <summary>
