@@ -34,7 +34,7 @@ namespace Assets.DoReMi.Scripts
         /// </summary>
         /// <param name="pos">The pos of the strength to get</param>
         /// <returns>The strength of the signal</returns>
-        private float GetSignalStrengthAt(Vector3 pos)
+        public float GetSignalStrengthAt(Vector3 pos)
         {
             // According to Friis equation
             float dist = Mathf.Sqrt(Mathf.Pow(transform.position.x - pos.x, 2) + Mathf.Pow(transform.position.z - pos.z, 2));
@@ -49,15 +49,10 @@ namespace Assets.DoReMi.Scripts
             gridManager.ComputeGrid(GetSignalStrengthAt);
         }
 
-        private void Update()
+        public void PlaceAPModel(Transform newTransfrom)
         {
-            // If the button is pressed, moves the AP model position
-            if (OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch))
-            {
-                transform.position = anchor.position;
-
-                gridManager.ComputeGrid(GetSignalStrengthAt);
-            }
+            transform.position = newTransfrom.position;
+            gridManager.ComputeGrid(GetSignalStrengthAt);
         }
     }
 }

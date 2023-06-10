@@ -33,8 +33,7 @@ namespace Assets.DoReMi.Scripts
         /// </summary>
         public float scanRange;
 
-        // TODO Louise : à compléter ;)
-        // public <UIManager> uiManager;
+        public UIManager uiManager;
         // Temp :
         public int idx;
         public TMP_Text txtIdx;
@@ -71,51 +70,17 @@ namespace Assets.DoReMi.Scripts
                 }
             }
             // Temp:
-            if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick)[0] > 0.9)
+            if (OVRInput.GetDown(OVRInput.Button.One))
             {
                 WifiAPInfo[] wifiList = new WifiAPInfo[_APTable.Count];
-                if (idx < wifiList.Length - 1)
-                {
-                    _APTable.Values.CopyTo(wifiList, 0);
-                    idx++;
-                    if (idx == wifiList.Length - 1)
-                    {
-                        // TODO : unactivate right arrow
-                    }
-                    if (idx > 0)
-                    {
-                        // TODO : activate left arrow
-                    }
-                    idx %= wifiList.Length;
-                    txtIdx.SetText("nb: " + idx);
-                    SSID.SetText(wifiList[idx].SSID);
-                    BSSID.SetText(wifiList[idx].BSSID);
-                    txtCnt.SetText("total: " + wifiList.Length);
-                    GridManager.SetSelectedAP(wifiList[idx].BSSID.GetHashCode());
-                }
-            }
-            if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick)[0] > 0.9)
-            {
-                WifiAPInfo[] wifiList = new WifiAPInfo[_APTable.Count];
-                if (idx > 0)
-                {
-                    _APTable.Values.CopyTo(wifiList, 0);
-                    idx--;
-                    if (idx < wifiList.Length - 1)
-                    {
-                        // TODO : activate right arrow
-                    }
-                    if (idx == 0)
-                    {
-                        // TODO : unactivate left arrow
-                    }
-                    idx %= wifiList.Length;
-                    txtIdx.SetText("nb: " + idx);
-                    SSID.SetText(wifiList[idx].SSID);
-                    BSSID.SetText(wifiList[idx].BSSID);
-                    txtCnt.SetText("total: " + wifiList.Length);
-                    GridManager.SetSelectedAP(wifiList[idx].BSSID.GetHashCode());
-                }
+                _APTable.Values.CopyTo(wifiList, 0);
+                idx++;
+                idx %= wifiList.Length;
+                txtIdx.SetText("nb: " + idx);
+                SSID.SetText(wifiList[idx].SSID);
+                BSSID.SetText(wifiList[idx].BSSID);
+                txtCnt.SetText("total: " + wifiList.Length);
+                GridManager.SetSelectedAP(wifiList[idx].BSSID.GetHashCode());
             }
         }
 
@@ -135,11 +100,10 @@ namespace Assets.DoReMi.Scripts
                 if (!_APTable.ContainsKey(ap.BSSID.GetHashCode()))
                 {
                     _APTable.Add(ap.BSSID.GetHashCode(), ap);
+                    uiManager.AddWifiInfo(ap);
 
                     if (_APTable.Count >= MAX_AP)
                         Debug.LogWarning($"Warning: APTable has {_APTable.Count} elements which is more MAX_AP = {MAX_AP}, possible performance loss");
-
-                    // TODO : ajouter dans l'UI le nouveau réseau trouvé
                 }
             }
             return wifiAPInfos;

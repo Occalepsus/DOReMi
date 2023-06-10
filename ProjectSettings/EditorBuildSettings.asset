@@ -8,12 +8,15 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Julien.unity
     guid: 3aa84ce67eb1fbf408e994e436a9d397
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Julien 1.unity
     guid: 23485e005e4306f46be7b849cf80db0b
   - enabled: 0
-    path: Assets/Scenes/Louise1.unity
-    guid: 8bba95a8c21efb54f8e09747d7b8e854
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/Louise 1.unity
+    guid: c9fada8d3c369794795d9c2c63392995
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 888b4250f8ceaa2429e77b7ecbe027b7, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: b550aba097c7b214e94381654fb763a8, type: 2}
