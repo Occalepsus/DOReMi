@@ -157,6 +157,10 @@ namespace Assets.DoReMi.Scripts
         /// The material of the spheres that have been computed
         /// </summary>
         public Material computedMat;
+        /// <summary>
+        /// The material of the spheres that have been saved
+        /// </summary>
+        public Material savedMat;
 
         /// <summary>
         /// The height of the not scanned or not measured bars
@@ -191,9 +195,13 @@ namespace Assets.DoReMi.Scripts
         /// </summary>
         private Dictionary<int, int>[,] _scannedLevels;
         /// <summary>
-        /// A matrix of every AP level at every position of the grid
+        /// A matrix of the computed levels
         /// </summary>
         private float[,] _computedLevels;
+        /// <summary>
+        /// A matrix of the displayed saved levels
+        /// </summary>
+        private int[,] _savedLevels;
 
         /// <summary>
         /// The list of Transforms of the points that have not been scanned yet
@@ -215,6 +223,10 @@ namespace Assets.DoReMi.Scripts
         /// The list of Transforms of the points that have been computed
         /// </summary>
         private List<Matrix4x4> _computedSphereTransforms;
+        /// <summary>
+        /// The list of Transforms of the points that have been saved
+        /// </summary>
+        private List<Matrix4x4> _savedSphereTransforms = new(0);
 
         private void Awake()
         {
@@ -231,14 +243,7 @@ namespace Assets.DoReMi.Scripts
             }
 
             // Initializing levels array
-            _scannedLevels = new Dictionary<int, int>[_grid.GetSize().x, _grid.GetSize().y];
-            for (int x = 0; x < _grid.GetSize().x; x++)
-            {
-                for (int y = 0; y < _grid.GetSize().y; y++)
-                {
-                    _scannedLevels[x, y] = new Dictionary<int, int>(SimManager.MAX_AP);
-                }
-            }
+            InitScanTable();
 
             UpdateScanDisplay();
         }
@@ -271,6 +276,11 @@ namespace Assets.DoReMi.Scripts
             {
                 Graphics.DrawMesh(sphereMesh, transform, computedMat, 0);
             }
+            // Drawing points for the saved beacons
+            foreach (var transform in _savedSphereTransforms)
+            {
+                Graphics.DrawMesh(sphereMesh, transform, savedMat, 0);
+            }
         }
 
         /// <summary>
@@ -282,6 +292,21 @@ namespace Assets.DoReMi.Scripts
             _selectedAPHashcode = newAPHashcode;
 
             UpdateScanDisplay();
+        }
+
+        /// <summary>
+        /// Initializes the scan table with new Dictionarys
+        /// </summary>
+        private void InitScanTable()
+        {
+            _scannedLevels = new Dictionary<int, int>[_grid.GetSize().x, _grid.GetSize().y];
+            for (int x = 0; x < _grid.GetSize().x; x++)
+            {
+                for (int y = 0; y < _grid.GetSize().y; y++)
+                {
+                    _scannedLevels[x, y] = new Dictionary<int, int>(SimManager.MAX_AP);
+                }
+            }
         }
 
         /// <summary>
@@ -425,6 +450,80 @@ namespace Assets.DoReMi.Scripts
                 }
             }
             UpdateComputeDisplay();
+        }
+
+        /// <summary>
+        /// Saves the scanned levels grid for the selected AP
+        /// </summary>
+        /// <returns>The array of the values saved</returns>
+        public int[] SaveDisplayedGrid()
+        {
+            int[] res = new int[_grid.GetPointsCount()];
+            for (int x = 0; x < _grid.GetSize().x; x++)
+            {
+                int row = x * _grid.GetSize().y;
+                for (int y = 0; y < _grid.GetSize().y ; y++)
+                {
+                     res[row + y] = _scannedLevels[x, y].TryGetValue(_selectedAPHashcode, out int val) ? val : int.MinValue;
+                }
+            }
+            return res;
+        }
+
+        /// <summary>
+        /// Resets the scanned levels grid
+        /// </summary>
+        public void ResetGrid()
+        {
+            InitScanTable();
+            UpdateScanDisplay();
+        }
+
+        /// <summary>
+        /// Restores the saved grid
+        /// </summary>
+        /// <param name="computeAtPos">The function that computes the model</param>
+        public void RestoreSavedGrid(int[] levels)
+        {
+            levels = levels ?? throw new ArgumentNullException(nameof(levels));
+            if (levels.Length != _grid.GetSize().x * _grid.GetSize().y)
+            {
+                throw new ArgumentException("The size of the grid is not the same as the size of the levels array");
+            }
+
+            _savedLevels = new int[_grid.GetSize().x, _grid.GetSize().y];
+            for (int x = 0; x < _grid.GetSize().x; x++)
+            {
+                int row = x * _grid.GetSize().y;
+                for (int y = 0; y < _grid.GetSize().y; y++)
+                {
+                    _savedLevels[x, y] = levels[row + y];
+                }
+            }
+            UpdateSavedDisplay();
+        }
+
+        /// <summary>
+        /// Updates the display of the saved points
+        /// </summary>
+        private void UpdateSavedDisplay()
+        {
+            _savedSphereTransforms = new(_grid.GetPointsCount());
+            for (int x = 0; x < _grid.GetSize().x; x++)
+            {
+                for (int y = 0; y < _grid.GetSize().y; y++)
+                {
+                    if (_savedLevels[x, y] == int.MinValue) continue;
+
+                    // Unlerping val between lowLevel and highLevel
+                    float t = Mathf.InverseLerp(lowLevel, highLevel, _savedLevels[x, y]);
+                    // Lerping the value of the height
+                    float height = Mathf.Lerp(lowHeight, highHeight, t);
+
+                    Matrix4x4 mat = Matrix4x4.TRS(_grid.ToWorldPos(x, y) + height * Vector3.up, Quaternion.identity, Vector3.one * sphereSize);
+                    _savedSphereTransforms.Add(mat);
+                }
+            }
         }
     }
 }
