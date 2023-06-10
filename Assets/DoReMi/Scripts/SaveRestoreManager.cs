@@ -11,14 +11,20 @@ namespace Assets.DoReMi.Scripts
         /// </summary>
         public GridManager gridManager;
 
-        private int[] _savedValues;
-
         /// <summary>
-        /// Calls SaveDisplayedGrid() on the GridManager and stores the returned values
+        /// Saves the values of the selected AP on the grid and displays them
         /// </summary>
         public void SaveGrid()
         {
-            _savedValues = gridManager.SaveDisplayedGrid();
+            gridManager.DisplaySavedGrid(gridManager.SaveDisplayedGrid());
+        }
+
+        /// <summary>
+        /// Remove all saved values from the grid
+        /// </summary>
+        public void DiscardSavedGrid()
+        {
+            gridManager.DiscardSavedValues();
         }
 
         /// <summary>
@@ -27,14 +33,6 @@ namespace Assets.DoReMi.Scripts
         public void ResetGrid()
         {
             gridManager.ResetGrid();
-        }
-
-        /// <summary>
-        /// Calls RestoreGrid() on the GridManager with saved values
-        /// </summary>
-        public void RestoreValues()
-        {
-            gridManager.RestoreSavedGrid(_savedValues);
         }
     }
 }

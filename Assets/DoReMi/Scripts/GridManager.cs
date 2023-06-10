@@ -379,6 +379,15 @@ namespace Assets.DoReMi.Scripts
         }
 
         /// <summary>
+        /// Resets the scanned levels grid
+        /// </summary>
+        public void ResetGrid()
+        {
+            InitScanTable();
+            UpdateScanDisplay();
+        }
+
+        /// <summary>
         /// Updates the display of the computed points according to the updated list of points
         /// </summary>
         private void UpdateComputeDisplay()
@@ -502,19 +511,10 @@ namespace Assets.DoReMi.Scripts
         }
 
         /// <summary>
-        /// Resets the scanned levels grid
-        /// </summary>
-        public void ResetGrid()
-        {
-            InitScanTable();
-            UpdateScanDisplay();
-        }
-
-        /// <summary>
         /// Restores the saved grid
         /// </summary>
         /// <param name="computeAtPos">The function that computes the model</param>
-        public void RestoreSavedGrid(int[] levels)
+        public void DisplaySavedGrid(int[] levels)
         {
             levels = levels ?? throw new ArgumentNullException(nameof(levels));
             if (levels.Length != _grid.GetSize().x * _grid.GetSize().y)
@@ -555,6 +555,14 @@ namespace Assets.DoReMi.Scripts
                     _savedSphereTransforms.Add(mat);
                 }
             }
+        }
+
+        /// <summary>
+        /// Removes the saved grid
+        /// </summary>
+        public void DiscardSavedValues()
+        {
+            _savedSphereTransforms = new(0);
         }
     }
 }
