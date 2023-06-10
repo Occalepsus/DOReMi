@@ -20,6 +20,11 @@ public class UIManager : MonoBehaviour
     public GridManager gridManager;
 
     /// <summary>
+    /// The global RestoreManager
+    /// </summary>
+    public SaveRestoreManager restoreManager;
+
+    /// <summary>
     /// The global APModel
     /// </summary>
     public APModel apModel;
@@ -85,12 +90,12 @@ public class UIManager : MonoBehaviour
         // updates wifi infos if the wifiInfo display is active
         if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x > 0.5 && wifiInfo.activeSelf)
         {
-            // TODO: Grid display next network
+            // TODO: make grid display next network
             displayIndex = (displayIndex + 1) % wifiAPInfos.Count;
         }
         if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x < -0.5 && wifiInfo.activeSelf)
         {
-            // TODO: Grid display previous network
+            // TODO: make grid display previous network
             displayIndex = (displayIndex - 1) % wifiAPInfos.Count;
         }
         
@@ -122,12 +127,17 @@ public class UIManager : MonoBehaviour
             apModel.PlaceAPModel(_trackedDevice);
         }
 
+        // Reset grid when pressing B
+        if (OVRInput.GetDown(OVRInput.RawButton.B) && _mode != AppMode.Display)
+        {
+            restoreManager.ResetGrid();
+        }
+
         // Updates the value on which the label is
-        int val = gridManager.GetValueAt(_trackedDevice.transform.position);
-        SetValue(val, actualMinus, actualValue);
-        int expected = (int)apModel.GetSignalStrengthAt(_trackedDevice.transform.position);
-        SetValue(expected, expectedMinus, expectedValue);
-        //TODO: add saved values if existing
+        gridManager.GetValuesAt(_trackedDevice.transform.position, out int actualVal, out float expectedVal, out int savedVal);
+        SetValue(actualVal, actualMinus, actualValue);
+        SetValue((int)expectedVal, expectedMinus, expectedValue);
+        SetValue(savedVal, savedMinus, savedValue);
 
         // Updates the wifi info values
         if (wifiAPInfos.Any())
@@ -142,10 +152,18 @@ public class UIManager : MonoBehaviour
     /// Sets the value to be displayed on the label
     /// </summary>
     /// <param name="newValue">The value to display</param>
-    private void SetValue(int newValue, TMP_Text minus, TMP_Text value)
+    private void SetValue(int val, TMP_Text minus, TMP_Text value)
     {
-        minus.gameObject.SetActive(newValue < 0);
-        value.SetText(Math.Abs(newValue).ToString());
+        if (val > int.MinValue)
+        {
+            minus.gameObject.SetActive(val < 0);
+            value.SetText(Math.Abs(val).ToString());
+        }
+        else
+        {
+            minus.gameObject.SetActive(false);
+            value.SetText("N/A");
+        }
     }
 
     private void ChangeMode()
@@ -186,13 +204,15 @@ public class UIManager : MonoBehaviour
     {
         if (saveButton.activeSelf)
         {
-            //TODO: create save
+            restoreManager.SaveGrid();
             saveButton.SetActive(false);
+            return;
         }
         else
         {
-            //TODO: discard save
+            restoreManager.RestoreValues();
             saveButton.SetActive(true);
+            return;
         }
     }
 

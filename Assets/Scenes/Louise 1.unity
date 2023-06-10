@@ -719,6 +719,7 @@ GameObject:
   - component: {fileID: 1306982024}
   - component: {fileID: 1306982026}
   - component: {fileID: 1306982028}
+  - component: {fileID: 1306982029}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -777,6 +778,7 @@ MonoBehaviour:
   emptyScanMat: {fileID: 2100000, guid: e4f5572e1981ffb4a983dd4789777dad, type: 2}
   measuredMat: {fileID: 2100000, guid: 71dd5ba6e85cfcf4d956bbfa2663ca10, type: 2}
   computedMat: {fileID: 2100000, guid: 0cfa72cbe3c82294ca36aba1f3eb0cb7, type: 2}
+  savedMat: {fileID: 0}
   nullHeight: 0.01
   lowLevel: -70
   lowHeight: 0.1
@@ -819,6 +821,19 @@ MonoBehaviour:
   gridManager: {fileID: 1306982026}
   labelAnchor: {fileID: 233679619}
   label: {fileID: 893094118}
+--- !u!114 &1306982029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1306982023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 609e16bbffd34814691d7c2d83218382, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridManager: {fileID: 1306982026}
 --- !u!1 &1313058145
 GameObject:
   m_ObjectHideFlags: 0
@@ -1190,6 +1205,10 @@ PrefabInstance:
       propertyPath: _trackedDevice
       value: 
       objectReference: {fileID: 233679619}
+    - target: {fileID: 3263983988411813097, guid: 8392a0cf16a09f8418a67b236e050219, type: 3}
+      propertyPath: restoreManager
+      value: 
+      objectReference: {fileID: 1306982029}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8392a0cf16a09f8418a67b236e050219, type: 3}
 --- !u!114 &717745441061926656 stripped
