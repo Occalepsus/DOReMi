@@ -36,22 +36,5 @@ namespace Assets.DoReMi.Scripts
         {
             gridManager.RestoreSavedGrid(_savedValues);
         }
-
-        // TODO: Remove this, it's just for testing
-        private void Update()
-        {
-            if (OVRInput.GetDown(OVRInput.RawButton.RIndexTrigger))
-            {
-                SaveGrid();
-            }
-            if (OVRInput.GetUp(OVRInput.RawButton.RIndexTrigger))
-            {
-                RestoreValues();
-            }
-            if (OVRInput.GetDown(OVRInput.RawButton.B))
-            {
-                ResetGrid();
-            }
-        }
     }
 }

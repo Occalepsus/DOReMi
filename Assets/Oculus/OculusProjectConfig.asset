@@ -34,4 +34,4 @@ MonoBehaviour:
   experimentalFeaturesEnabled: 0
   insightPassthroughEnabled: 0
   _insightPassthroughSupport: 1
-  systemSplashScreen: {fileID: 0}
+  systemSplashScreen: {fileID: 2800000, guid: 6c33aba0bc9e13f43883ab53e54f9475, type: 3}

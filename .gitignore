@@ -75,3 +75,5 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # End of https://www.toptal.com/developers/gitignore/api/unity
+/Assets/DoReMi/Materials/photo 1.png
+/Assets/DoReMi/Materials/photo 1.png.meta
