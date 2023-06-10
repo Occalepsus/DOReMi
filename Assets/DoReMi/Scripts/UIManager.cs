@@ -90,13 +90,13 @@ public class UIManager : MonoBehaviour
         // updates wifi infos if the wifiInfo display is active
         if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x > 0.5 && wifiInfo.activeSelf)
         {
-            // TODO: make grid display next network
             displayIndex = (displayIndex + 1) % wifiAPInfos.Count;
+            gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
         }
         if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x < -0.5 && wifiInfo.activeSelf)
         {
-            // TODO: make grid display previous network
             displayIndex = (displayIndex - 1) % wifiAPInfos.Count;
+            gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
         }
         
         if (OVRInput.GetDown(OVRInput.Button.One))
@@ -206,13 +206,11 @@ public class UIManager : MonoBehaviour
         {
             restoreManager.SaveGrid();
             saveButton.SetActive(false);
-            return;
         }
         else
         {
             restoreManager.RestoreValues();
             saveButton.SetActive(true);
-            return;
         }
     }
 
