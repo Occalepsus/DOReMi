@@ -9,17 +9,17 @@ namespace Assets.DoReMi.Scripts
     {
         /**
          * Grid organisation:
-         *     x              x
-         *      \            / offset
-         *       [1]      [2]
+         *     x             x
+         *      \           / offset
+         *       [1]     [2]
          *     
          *      
-         *     
+         *            x -center (0,0 of the world)
          *  gridZDir  
          *     v    
-         *       [0]      [3]
-         *     |/            \
-         *     x- gridXDir    x
+         *       [0]     [3]
+         *     |/           \
+         *     x- gridXDir   x
          * gridOrigin    
          */
 
@@ -35,17 +35,17 @@ namespace Assets.DoReMi.Scripts
         Matrix4x4 rotationToGridMatrix;
         Matrix4x4 rotationToWorldMatrix;
 
-        public Grid(Vector3[] playAreaBounds, float tileSize, int gridOffset)
+        public Grid(Vector3 gridDimensions, float tileSize, int gridOffset)
         {
-            if (playAreaBounds == null || playAreaBounds.Length != 4) throw new ArgumentException("Invalid argument");
+            if (gridDimensions == null) throw new ArgumentException("Invalid argument");
 
-            Vector3 gridOrigin = playAreaBounds[0] - gridOffset * tileSize * ((playAreaBounds[1] - playAreaBounds[0]).normalized + (playAreaBounds[3] - playAreaBounds[0]).normalized);
+            Vector3 gridOrigin = new(- gridDimensions.x / 2 - gridOffset * tileSize, 0, - gridDimensions.z / 2 - gridOffset * tileSize);
 
-            _gridSize = new(Mathf.RoundToInt((playAreaBounds[1] - playAreaBounds[0]).magnitude / tileSize) + 2 * gridOffset + 1,
-                Mathf.RoundToInt((playAreaBounds[3] - playAreaBounds[0]).magnitude / tileSize) + 2 * gridOffset + 1);
+            _gridSize = new(Mathf.RoundToInt(gridDimensions.x / tileSize) + 2 * gridOffset + 1,
+                Mathf.RoundToInt(gridDimensions.z / tileSize) + 2 * gridOffset + 1);
             _pointsCount = _gridSize.x * _gridSize.y;
 
-            rotationToWorldMatrix = Matrix4x4.TRS(gridOrigin, Quaternion.FromToRotation(Vector3.right, playAreaBounds[1] - playAreaBounds[0]), Vector3.one * tileSize);
+            rotationToWorldMatrix = Matrix4x4.TRS(gridOrigin, Quaternion.identity, Vector3.one * tileSize);
             rotationToGridMatrix = rotationToWorldMatrix.inverse;
         }
 
@@ -123,6 +123,10 @@ namespace Assets.DoReMi.Scripts
         /// The grid to use
         /// </summary>
         private Grid _grid;
+        /// <summary>
+        /// The line renderer of the outline of the grid
+        /// </summary>
+        public LineRenderer gridOutline;
 
         /// <summary>
         /// The size of the spheres of the beacons
@@ -232,14 +236,29 @@ namespace Assets.DoReMi.Scripts
         {
             try
             {
-                _grid = new Grid(OVRManager.boundary.GetGeometry(OVRBoundary.BoundaryType.PlayArea), tileSize, gridOffset);
+                _grid = new Grid(OVRManager.boundary.GetDimensions(OVRBoundary.BoundaryType.PlayArea), tileSize, gridOffset);
             }
             // In case the Guardian is not set
             catch (Exception e)
             {
                 Debug.LogWarning(e);
-                Vector3[] v = { new Vector3(0, 0), new Vector3(1, 0, 0), new Vector3(1, 0, 1), new Vector3(0, 0, 1) };
+                Vector3 v = new(2, 0, 2);
                 _grid = new Grid(v, tileSize, gridOffset);
+            }
+
+            // Initializing the line renderer of the grid outline
+            if (gridOutline != null)
+            {
+                gridOutline.loop = true;
+                gridOutline.positionCount = 4;
+                Vector3 lineZOffset = new(0, 0.05f, 0);
+                gridOutline.SetPositions(new Vector3[]
+                {
+                    _grid.ToWorldPos(new Vector2Int(gridOffset, gridOffset)) - lineZOffset,
+                    _grid.ToWorldPos(new Vector2Int(gridOffset, _grid.GetSize().y - gridOffset - 1)) - lineZOffset,
+                    _grid.ToWorldPos(new Vector2Int(_grid.GetSize().x - gridOffset - 1, _grid.GetSize().y - gridOffset - 1)) - lineZOffset,
+                    _grid.ToWorldPos(new Vector2Int(_grid.GetSize().x - gridOffset - 1, gridOffset)) - lineZOffset
+                });
             }
 
             // Initializing levels array
