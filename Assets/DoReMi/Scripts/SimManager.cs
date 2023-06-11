@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using TMPro;
-using UnityEditor;
 using UnityEngine;
 
 namespace Assets.DoReMi.Scripts
@@ -12,7 +9,7 @@ namespace Assets.DoReMi.Scripts
         /// <summary>
         /// Defines the number of wifi access points scannable during a session
         /// </summary>
-        public const int MAX_AP = 20;
+        public const int MAX_AP = 30;
 
         /// <summary>
         /// The WifiScanner MonoBehaviour
@@ -22,6 +19,10 @@ namespace Assets.DoReMi.Scripts
         /// The GridManager MonoBehaviour
         /// </summary>
         public GridManager GridManager;
+        /// <summary>
+        /// The UIManager MonoBehaviour
+        /// </summary>
+        public UIManager uiManager;
 
         /// <summary>
         /// The transform of the position of the head
@@ -33,19 +34,11 @@ namespace Assets.DoReMi.Scripts
         /// </summary>
         public float scanRange;
 
-        public UIManager uiManager;
-        // Temp :
-        public int idx;
-        public TMP_Text txtIdx;
-        public TMP_Text SSID;
-        public TMP_Text BSSID;
-        public TMP_Text txtCnt;
-
         /// <summary>
         /// The Dict of all detected access points in space
         /// </summary>
         /// <remarks>maximum MAX_AP elements for optimization</remarks>
-        private readonly Dictionary<int, WifiAPInfo> _APTable = new(MAX_AP); // Maybe change WifiInfo to just String for BSSID, the rest is useless here
+        private readonly HashSet<string> _APTable = new(MAX_AP);
 
         private void Update()
         {
@@ -53,34 +46,13 @@ namespace Assets.DoReMi.Scripts
             {
                 try
                 {
+                    // Can fail if WifiScanner has not been initialized yet
                     GridManager.ScanAtPos(HeadTransform.position, ScanWifi());
                 }
                 catch (NullReferenceException)
                 {
-                    Debug.LogWarning("Warning: Scan failed, putting test fake scan instead");
-                    WifiAPInfo[] info = new WifiAPInfo[1];
-                    info[0] = new WifiAPInfo()
-                    {
-                        SSID = "TEST",
-                        BSSID = "00:00",
-                        level = -30
-                    };
-                    GridManager.ScanAtPos(HeadTransform.position, info);
-                    GridManager.SetSelectedAP("00:00".GetHashCode());
+                    Debug.LogWarning("Warning: Scan failed, can retry");
                 }
-            }
-            // Temp:
-            if (OVRInput.GetDown(OVRInput.Button.One))
-            {
-                WifiAPInfo[] wifiList = new WifiAPInfo[_APTable.Count];
-                _APTable.Values.CopyTo(wifiList, 0);
-                idx++;
-                idx %= wifiList.Length;
-                txtIdx.SetText("nb: " + idx);
-                SSID.SetText(wifiList[idx].SSID);
-                BSSID.SetText(wifiList[idx].BSSID);
-                txtCnt.SetText("total: " + wifiList.Length);
-                GridManager.SetSelectedAP(wifiList[idx].BSSID.GetHashCode());
             }
         }
 
@@ -97,9 +69,9 @@ namespace Assets.DoReMi.Scripts
             foreach (WifiAPInfo ap in wifiAPInfos)
             {
                 // If this access point was never discovered before, add it to our access point table
-                if (!_APTable.ContainsKey(ap.BSSID.GetHashCode()))
+                if (!_APTable.Contains(ap.BSSID))
                 {
-                    _APTable.Add(ap.BSSID.GetHashCode(), ap);
+                    _APTable.Add(ap.BSSID);
                     uiManager.AddWifiInfo(ap);
 
                     if (_APTable.Count >= MAX_AP)
