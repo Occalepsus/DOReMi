@@ -587,7 +587,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae4126a6bed412b49b55cfd5b5453960, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileSize: 0.1
+  tileSize: 0.2
   gridOffset: 2
   gridOutline: {fileID: 523132114}
   sphereSize: 0.02
@@ -1016,7 +1016,7 @@ GameObject:
   - component: {fileID: 1927881935}
   - component: {fileID: 1927881934}
   m_Layer: 0
-  m_Name: Simulated AP
+  m_Name: AP Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1031,8 +1031,8 @@ Transform:
   m_GameObject: {fileID: 1927881932}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 0.1, y: 0.05, z: 0.1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1306982025}
   m_RootOrder: 1
@@ -1051,10 +1051,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridManager: {fileID: 523132116}
   anchor: {fileID: 233679619}
-  powerEmitterDBm: 0
-  gainEmitterDBi: 0
-  gainReceiverDBi: 0
-  wifiFrequencyHz: 2.4e+9
 --- !u!23 &1927881935
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1201,6 +1197,14 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 233679621}
+    - target: {fileID: 717745443093315367, guid: 8392a0cf16a09f8418a67b236e050219, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 717745443093315371, guid: 8392a0cf16a09f8418a67b236e050219, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3263983988411813097, guid: 8392a0cf16a09f8418a67b236e050219, type: 3}
       propertyPath: target
       value: 
@@ -1233,6 +1237,14 @@ PrefabInstance:
       propertyPath: restoreManager
       value: 
       objectReference: {fileID: 523132115}
+    - target: {fileID: 6105044196602138890, guid: 8392a0cf16a09f8418a67b236e050219, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7196946782098383069, guid: 8392a0cf16a09f8418a67b236e050219, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8392a0cf16a09f8418a67b236e050219, type: 3}
 --- !u!114 &717745441061926656 stripped
