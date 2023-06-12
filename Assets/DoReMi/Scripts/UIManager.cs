@@ -58,8 +58,8 @@ public class UIManager : MonoBehaviour
     public TMP_Text wifiSSID;
     public TMP_Text wifiBSSID;
     private int displayIndex = 0;
-    private int cooldown = 0;
-    private bool joystickReady = true;
+    private bool xJoystickReady = true; // true if the joystick is ready to be used on axis x
+    private bool yJoystickReady = true; // true if the joystick is ready to be used on axis y
 
     private List<WifiAPInfo> wifiAPInfos = new List<WifiAPInfo> { };
 
@@ -80,60 +80,46 @@ public class UIManager : MonoBehaviour
         displayMenu.SetActive(false);
         configMenu.SetActive(false);
         saveButton.SetActive(true);
+        xJoystickReady = true;
+        yJoystickReady = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (OVRInput.GetDown(OVRInput.RawButton.RIndexTrigger))
+        // change mode
+        if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x > 0.85 && xJoystickReady)
         {
-            ChangeMode();
+            NextMode();
+            xJoystickReady = false;
+        }
+        if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x < -0.85 && xJoystickReady)
+        {
+            PreviousMode();
+            xJoystickReady = false;
         }
         // updates wifi infos if the wifiInfo display is active
-        if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x > 0.85 && wifiInfo.activeSelf)
+        if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).y > 0.85 && wifiInfo.activeSelf && yJoystickReady && wifiAPInfos.Any())
         {
-            if (joystickReady)
-            {
-                displayIndex = (displayIndex + 1 + wifiAPInfos.Count) % wifiAPInfos.Count;
-                gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
-                joystickReady = false;
-            }
-            //if (cooldown > 0)
-            //{
-            //    cooldown++;
-            //    if (cooldown == 8) cooldown = 0;
-            //}
-            //else
-            //{
-            //    displayIndex = (displayIndex + 1 + wifiAPInfos.Count) % wifiAPInfos.Count;
-            //    gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
-            //    cooldown++;
-            //}
+            displayIndex = (displayIndex + 1 + wifiAPInfos.Count) % wifiAPInfos.Count;
+            gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
+            yJoystickReady = false;
             
         }
-        if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x < -0.85 && wifiInfo.activeSelf)
+        if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).y < -0.85 && wifiInfo.activeSelf && yJoystickReady && wifiAPInfos.Any())
         {
-            if (joystickReady)
-            {
-                displayIndex = (displayIndex - 1 + wifiAPInfos.Count) % wifiAPInfos.Count;
-                gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
-                joystickReady = false;
-            }
-            //if (cooldown > 0)
-            //{
-            //    cooldown++;
-            //    if (cooldown == 8) cooldown = 0;
-            //}
-            //else
-            //{
-            //    displayIndex = (displayIndex - 1 + wifiAPInfos.Count) % wifiAPInfos.Count;
-            //    gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
-            //    cooldown++;
-            //}
+            displayIndex = (displayIndex - 1 + wifiAPInfos.Count) % wifiAPInfos.Count;
+            gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
+            yJoystickReady = false;
         }
+        // updated joystick state
         if (Math.Abs(OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x) < 0.4)
         {
-            joystickReady = true;
+            xJoystickReady = true;
+        }
+        if (Math.Abs(OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).y) < 0.4)
+        {
+            yJoystickReady = true;
         }
 
         // executes operation of button A depending on the mode
@@ -204,7 +190,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void ChangeMode()
+    private void NextMode()
     {
         switch (_mode)
         {
@@ -238,6 +224,39 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private void PreviousMode()
+    {
+        switch (_mode)
+        {
+            case AppMode.Config:
+                {
+                    _mode = AppMode.Display;
+                    wifiInfo.SetActive(true);
+                    measureMenu.SetActive(false);
+                    displayMenu.SetActive(true);
+                    configMenu.SetActive(false);
+                    return;
+                }
+            case AppMode.Measure:
+                {
+                    _mode = AppMode.Config;
+                    wifiInfo.SetActive(false);
+                    measureMenu.SetActive(false);
+                    displayMenu.SetActive(false);
+                    configMenu.SetActive(true);
+                    return;
+                }
+            case AppMode.Display:
+                {
+                    _mode = AppMode.Measure;
+                    wifiInfo.SetActive(true);
+                    measureMenu.SetActive(true);
+                    displayMenu.SetActive(false);
+                    configMenu.SetActive(false);
+                    return;
+                }
+        }
+    }
     private void SaveMeasure()
     {
         if (saveButton.activeSelf)
@@ -268,6 +287,7 @@ public class UIManager : MonoBehaviour
 
     public void AddWifiInfo(WifiAPInfo newAPInfo)
     {
+        Debug.Log("adding a network");
         wifiAPInfos.Add(newAPInfo);
     }
 }

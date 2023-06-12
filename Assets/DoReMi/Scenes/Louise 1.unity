@@ -425,90 +425,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d9809c5e8418bb047bf2c8ba1d1a2cec, type: 3}
---- !u!1001 &893094117
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1306982025}
-    m_Modifications:
-    - target: {fileID: 342246780706844026, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: m_Name
-      value: 3D Label
-      objectReference: {fileID: 0}
-    - target: {fileID: 342246780706844026, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 342246780706844027, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 342246780706844027, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 342246780706844027, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 342246780706844027, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 342246780706844027, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 342246780706844027, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 342246780706844027, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 342246780706844027, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 342246780706844027, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 342246780706844027, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 342246780706844027, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 362228986896967683, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: anchor
-      value: 
-      objectReference: {fileID: 233679619}
-    - target: {fileID: 362228986896967683, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: mainCamera
-      value: 
-      objectReference: {fileID: 233679621}
-    - target: {fileID: 362228986896967683, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-      propertyPath: defaultLabelScale
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
---- !u!114 &893094118 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 362228986896967683, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-  m_PrefabInstance: {fileID: 893094117}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2558ceab3326f64891bbcff013bb4f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &975288508
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -701,11 +617,6 @@ MonoBehaviour:
   edgeRenderingEnabled_: 0
   edgeColor_: {r: 1, g: 1, b: 1, a: 1}
   colorMapType: 0
---- !u!4 &1165544683 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 342246780706844027, guid: 9b5ed9bfcb4fcfd4a860d455b6036cb4, type: 3}
-  m_PrefabInstance: {fileID: 893094117}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1306982023
 GameObject:
   m_ObjectHideFlags: 0
@@ -718,7 +629,6 @@ GameObject:
   - component: {fileID: 1306982027}
   - component: {fileID: 1306982024}
   - component: {fileID: 1306982026}
-  - component: {fileID: 1306982028}
   - component: {fileID: 1306982029}
   m_Layer: 0
   m_Name: Manager
@@ -751,7 +661,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1165544683}
   - {fileID: 1927881933}
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -779,7 +688,7 @@ MonoBehaviour:
   emptyScanMat: {fileID: 2100000, guid: e4f5572e1981ffb4a983dd4789777dad, type: 2}
   measuredMat: {fileID: 2100000, guid: 71dd5ba6e85cfcf4d956bbfa2663ca10, type: 2}
   computedMat: {fileID: 2100000, guid: 0cfa72cbe3c82294ca36aba1f3eb0cb7, type: 2}
-  savedMat: {fileID: 0}
+  savedMat: {fileID: 2100000, guid: fb044337e42127d49b0a085fa9288b5f, type: 2}
   nullHeight: 0.01
   lowLevel: -70
   lowHeight: 0.1
@@ -799,29 +708,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WifiScanner: {fileID: 1306982024}
   GridManager: {fileID: 1306982026}
+  uiManager: {fileID: 237895372}
   HeadTransform: {fileID: 2059221909}
   scanRange: 0.2
-  uiManager: {fileID: 237895372}
-  idx: 0
-  txtIdx: {fileID: 0}
-  SSID: {fileID: 0}
-  BSSID: {fileID: 0}
-  txtCnt: {fileID: 0}
---- !u!114 &1306982028
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1306982023}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f4ba260ba7be40449accdd4cd248456, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gridManager: {fileID: 1306982026}
-  labelAnchor: {fileID: 233679619}
-  label: {fileID: 893094118}
 --- !u!114 &1306982029
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -918,6 +807,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1393122605308349976, guid: ba5f660e3e7471844b91fbeb162b1752, type: 3}
+      propertyPath: anchor
+      value: 
+      objectReference: {fileID: 233679619}
+    - target: {fileID: 1393122605308349976, guid: ba5f660e3e7471844b91fbeb162b1752, type: 3}
+      propertyPath: gridManager
+      value: 
+      objectReference: {fileID: 1306982026}
     - target: {fileID: 4644716292771709864, guid: ba5f660e3e7471844b91fbeb162b1752, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -973,31 +870,6 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 7834652324039645963, guid: ba5f660e3e7471844b91fbeb162b1752, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: ba5f660e3e7471844b91fbeb162b1752, type: 3}
---- !u!1 &1625842665 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6580463682566942090, guid: ba5f660e3e7471844b91fbeb162b1752, type: 3}
-  m_PrefabInstance: {fileID: 1422311677}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &1625842667 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 8870829827417666994, guid: ba5f660e3e7471844b91fbeb162b1752, type: 3}
-  m_PrefabInstance: {fileID: 1422311677}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1625842670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1625842665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3bf8c704d23575d4487f25e1d666e082, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gridManager: {fileID: 1306982026}
-  anchor: {fileID: 233679619}
-  meshRenderer: {fileID: 1625842667}
 --- !u!4 &1779930287 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4484591312116288, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
@@ -1103,7 +975,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1306982025}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1927881934
 MonoBehaviour:
@@ -1119,10 +991,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridManager: {fileID: 1306982026}
   anchor: {fileID: 233679619}
-  powerEmitterDBm: 0
-  gainEmitterDBi: 0
-  gainReceiverDBi: 0
-  wifiFrequencyHz: 2.4e+9
 --- !u!23 &1927881935
 MeshRenderer:
   m_ObjectHideFlags: 0
