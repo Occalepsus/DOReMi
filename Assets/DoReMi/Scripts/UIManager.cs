@@ -256,12 +256,13 @@ public class UIManager : MonoBehaviour
     {
         if (matchCheck.activeSelf)
         {
-            //TODO: unmatch measures
+            apModel.MatchWithUserValues(0, 0, 0, 2.4e9f);
             matchCheck.SetActive(false);
         }
         else
         {
-            //TODO: match measures
+            gridManager.GetValuesAt(_trackedDevice.transform.position, out int val, out _, out _);
+            apModel.MatchWithLevel(val);
             matchCheck.SetActive(true);
         }
     }
