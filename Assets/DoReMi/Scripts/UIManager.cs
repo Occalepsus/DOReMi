@@ -262,6 +262,14 @@ public class UIManager : MonoBehaviour
         else
         {
             gridManager.GetValuesAt(_trackedDevice.transform.position, out int val, out _, out _);
+            // If no value at this position, keep the check inactive
+            if (val == int.MinValue)
+            {
+                Debug.LogWarning("No value at this position, keeping unchecked.");
+                matchCheck.SetActive(false);
+                return;
+            }
+
             apModel.MatchWithLevel(val);
             matchCheck.SetActive(true);
         }
