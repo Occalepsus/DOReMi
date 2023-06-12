@@ -14,10 +14,10 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
-  - enabled: 0
+  - enabled: 1
     path: Assets/DoReMi/Scenes/Louise 1.unity
     guid: c9fada8d3c369794795d9c2c63392995
-  - enabled: 1
+  - enabled: 0
     path: Assets/DoReMi/Scenes/Default.unity
     guid: 1d9e177d3c820a548ab1b92a06bf7f1f
   m_configObjects:

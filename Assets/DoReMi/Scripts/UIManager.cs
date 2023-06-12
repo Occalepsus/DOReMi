@@ -59,6 +59,7 @@ public class UIManager : MonoBehaviour
     public TMP_Text wifiBSSID;
     private int displayIndex = 0;
     private int cooldown = 0;
+    private bool joystickReady = true;
 
     private List<WifiAPInfo> wifiAPInfos = new List<WifiAPInfo> { };
 
@@ -91,34 +92,50 @@ public class UIManager : MonoBehaviour
         // updates wifi infos if the wifiInfo display is active
         if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x > 0.85 && wifiInfo.activeSelf)
         {
-            if (cooldown > 0)
-            {
-                cooldown++;
-                if (cooldown == 8) cooldown = 0;
-            }
-            else
+            if (joystickReady)
             {
                 displayIndex = (displayIndex + 1 + wifiAPInfos.Count) % wifiAPInfos.Count;
                 gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
-                cooldown++;
+                joystickReady = false;
             }
+            //if (cooldown > 0)
+            //{
+            //    cooldown++;
+            //    if (cooldown == 8) cooldown = 0;
+            //}
+            //else
+            //{
+            //    displayIndex = (displayIndex + 1 + wifiAPInfos.Count) % wifiAPInfos.Count;
+            //    gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
+            //    cooldown++;
+            //}
             
         }
         if (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x < -0.85 && wifiInfo.activeSelf)
         {
-            if (cooldown > 0)
-            {
-                cooldown++;
-                if (cooldown == 8) cooldown = 0;
-            }
-            else
+            if (joystickReady)
             {
                 displayIndex = (displayIndex - 1 + wifiAPInfos.Count) % wifiAPInfos.Count;
                 gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
-                cooldown++;
+                joystickReady = false;
             }
+            //if (cooldown > 0)
+            //{
+            //    cooldown++;
+            //    if (cooldown == 8) cooldown = 0;
+            //}
+            //else
+            //{
+            //    displayIndex = (displayIndex - 1 + wifiAPInfos.Count) % wifiAPInfos.Count;
+            //    gridManager.SetSelectedAP(wifiAPInfos[displayIndex].BSSID.GetHashCode());
+            //    cooldown++;
+            //}
         }
-        
+        if (Math.Abs(OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick).x) < 0.4)
+        {
+            joystickReady = true;
+        }
+
         // executes operation of button A depending on the mode
         if (OVRInput.GetDown(OVRInput.Button.One))
         {
