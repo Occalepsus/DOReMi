@@ -275,12 +275,21 @@ public class UIManager : MonoBehaviour
     {
         if (matchCheck.activeSelf)
         {
-            //TODO: unmatch measures
+            apModel.MatchWithUserValues(0, 0, 0, 2.4e9f);
             matchCheck.SetActive(false);
         }
         else
         {
-            //TODO: match measures
+            gridManager.GetValuesAt(_trackedDevice.transform.position, out int val, out _, out _);
+            // If no value at this position, keep the check inactive
+            if (val == int.MinValue)
+            {
+                Debug.LogWarning("No value at this position, keeping unchecked.");
+                matchCheck.SetActive(false);
+                return;
+            }
+
+            apModel.MatchWithLevel(val);
             matchCheck.SetActive(true);
         }
     }

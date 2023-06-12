@@ -63,7 +63,7 @@ namespace Assets.DoReMi.Scripts
         public void MatchWithLevel(int valueToMatch)
         {
             // Setting the const part of the Friis formula in our model with the value to match
-            _constValue = valueToMatch;
+            _constValue = valueToMatch + 20 * Mathf.Log10(0.2f);
             // Sets the caller of the method of GridManager that gets the computed signal strength
             gridManager.ComputeGrid(GetSignalStrengthAt);
         }

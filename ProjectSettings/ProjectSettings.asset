@@ -138,6 +138,8 @@ PlayerSettings:
   preloadedAssets:
   - {fileID: 0}
   - {fileID: 11400000, guid: e1fd4f7970373fe47a7ab392d4acb231, type: 2}
+  - {fileID: -3332304799260137324, guid: b550aba097c7b214e94381654fb763a8, type: 2}
+  - {fileID: 11400000, guid: 888b4250f8ceaa2429e77b7ecbe027b7, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -276,7 +278,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 6c33aba0bc9e13f43883ab53e54f9475, type: 3}
+      m_Icon: {fileID: 0}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
