@@ -29,7 +29,7 @@ namespace Oculus.Interaction
     {
         [Tooltip("Represents the pokeable surface area of this interactable.")]
         [SerializeField, Interface(typeof(ISurfacePatch))]
-        private MonoBehaviour _surfacePatch;
+        private UnityEngine.Object _surfacePatch;
         public ISurfacePatch SurfacePatch { get; private set; }
 
         [SerializeField]
@@ -148,7 +148,7 @@ namespace Oculus.Interaction
 
         [SerializeField]
         [Tooltip("If enabled, recoil assist will affect unselection and reselection criteria. " +
-                 "Useful for triggering unselect in response to a smaller motion in the negative "+
+                 "Useful for triggering unselect in response to a smaller motion in the negative " +
                  "direction from a surface.")]
         private RecoilAssistConfig _recoilAssist =
             new RecoilAssistConfig()
@@ -157,6 +157,11 @@ namespace Oculus.Interaction
                 ExitDistance = 0.02f,
                 ReEnterDistance = 0.02f
             };
+
+        [SerializeField, Optional]
+        [Tooltip("(Meters, World) The threshold below which distances near this surface " +
+                 "are treated as equal in depth for the purposes of ranking.")]
+        private float _closeDistanceThreshold = 0.001f;
 
         [SerializeField, Optional]
         private int _tiebreakerScore = 0;
@@ -238,6 +243,18 @@ namespace Oculus.Interaction
             set
             {
                 _cancelSelectTangent = value;
+            }
+        }
+
+        public float CloseDistanceThreshold
+        {
+            get
+            {
+                return _closeDistanceThreshold;
+            }
+            set
+            {
+                _closeDistanceThreshold = value;
             }
         }
 
@@ -338,7 +355,6 @@ namespace Oculus.Interaction
                     Mathf.Min(_minThresholds.MinNormal,
                     _enterHoverNormal);
             }
-
             this.EndStart(ref _started);
         }
 
@@ -361,7 +377,7 @@ namespace Oculus.Interaction
 
         public void InjectSurfacePatch(ISurfacePatch surfacePatch)
         {
-            _surfacePatch = surfacePatch as MonoBehaviour;
+            _surfacePatch = surfacePatch as UnityEngine.Object;
             SurfacePatch = surfacePatch;
         }
 
