@@ -21,19 +21,19 @@ L'application DoRéMi peut avoir différents cas d'utilisation. Voici celui que 
 
 1. Lorsque l'application DoRéMi est lancée, les mesures sont toutes vides (signalées par des points blancs) et forment un quadrillage. Commencez par regarder votre main, vous verrez en haut le réseau sélectionné, vous pouvez choisir celui que vous voulez, vous pouvez ensuite vous déplacer, et voir des points bleus reliés par des barres dont la hauteur correspond au niveau du signal WiFi sélectionné. Les points scannés peuvent aussi être gris ce qui signifie que le réseau sélectionné n'est pas détecté à l'endroit et au moment de la mesure. Sur l'interface, dans le panneau `Display mode` vous pouvez afficher les mesures que vous venez d'effectuer.
 
-![Lancement de l'application](https://github.com/Occalepsus/DoReMi-Oculus/tree/main/Assets/DoReMi/screenshots/1-Interface%20et%20premières%20mesures.png)
+![Lancement de l'application](https://github.com/Occalepsus/DoReMi-Oculus/blob/main/Assets/DoReMi/Screenshots/1-Interface%20et%20premi%C3%A8res%20mesures.png)
 
 2. Sortez du casque et lancez un point d'accès WiFi, par exemple sur votre téléphone. Revenez dans le casque, dans le panneau `Measure Mode` appuyez sur `B` pour réinitialiser les mesures. Cherchez ensuite dans la liste votre point d'accès et lisez le niveau dans la panneau `Display Mode`.
 
-![Mesure d'un point d'accès](https://github.com/Occalepsus/DoReMi-Oculus/tree/main/Assets/DoReMi/screenshots/2-Mesure%20d'u%20point%20d'accès.png)
+![Mesure d'un point d'accès](https://github.com/Occalepsus/DoReMi-Oculus/blob/main/Assets/DoReMi/Screenshots/2-Mesure%20d'un%20point%20d'acc%C3%A8s.png)
 
 3. Dans le panneau `Measure Mode`, appuyez sur `A` après que vous ayez sélectionné votre point d'accès dans la liste pour sauvegarder les mesures que vous avez effectuées. Ces mesures sauvegardées s'afficheront par des points verts. Vous pouvez maintenant appuyer sur `B` pour réinitialiser les mesures et voir ces points verts sauvergardés, et voir dans le panneau `Display Mode` la valeur de la mesure sauvegardée.
 
-![Sauvegarder les mesures](https://github.com/Occalepsus/DoReMi-Oculus/tree/main/Assets/DoReMi/screenshots/3-Sauvegarde%20des%20mesures.png)
+![Sauvegarder les mesures](https://github.com/Occalepsus/DoReMi-Oculus/blob/main/Assets/DoReMi/Screenshots/3-Sauvegarde%20des%20mesures.png)
 
 4. Pour comparer vos mesures au modèle de Friis, déplacer vous pour avoir votre manette au dessus du point d'accès, que vous avez sélectionné. Vous verrez un point rouge au sol qui montre sur quel point est votre manette. Vous pouvez appuyer sur `A` dans le panneau `Config Mode` pour positionner l'antenne virtuelle au niveau de votre antenne physique. Vous devrez voir un point jaune au sol, à l'endroit où est l'antenne virtuelle. Enfin, les paramètres par défaut mis dans l'équation des télécommunications sont `Pe = -20dBm`, `Ge = 0dBi` et `Gr = 0dBi`, alors si vous voulez adapter les paramètres du modèle aux mesures vous pouvez positionner votre manette au dessus de l'antenne virtuelle, et dans le panneau `Display Mode` appuyer sur `A` pour cocher la case. Les paramètres du modèle se sont maintenant adaptés aux mesures.
 
-![Comparaison du modèle aux mesures](https://github.com/Occalepsus/DoReMi-Oculus/tree/main/Assets/DoReMi/screenshots/4-Comparaison%20du%20modèle%20aux%20mesures.png)
+![Comparaison du modèle aux mesures](https://github.com/Occalepsus/DoReMi-Oculus/blob/main/Assets/DoReMi/Screenshots/4-Comparaison%20du%20mod%C3%A8le%20aux%20mesures.png)
 
 ## Installation
 
